@@ -134,9 +134,11 @@
     }
 
     if (!shouldLock && isLocked) {
+      root.classList.add("restoring-scroll");
       root.classList.remove("dialog-open");
       body.style.removeProperty("top");
       window.scrollTo(0, lockedScrollY);
+      requestAnimationFrame(() => root.classList.remove("restoring-scroll"));
     }
   }
 

@@ -28,6 +28,8 @@
 
 html { scroll-behavior: smooth; }
 
+html.restoring-scroll { scroll-behavior: auto !important; }
+
 html.dialog-open { overflow: hidden; }
 
 html.dialog-open body {
