@@ -1,7 +1,9 @@
-Copyright (c) 2026 Junsong Chen. All rights reserved.
+Copyright (c) 2026 Junsong Chen.
 
-The Paper Recap website design, original source code, and original written
-content in this repository are owned by Junsong Chen unless otherwise noted.
+The Paper Recap software source code is available under the MIT License; see
+LICENSE. The original paper-reading notes, original written content, and
+original media in content/ remain owned by Junsong Chen and are not licensed
+under the MIT License unless a file explicitly states otherwise.
 
 Paper titles, bibliographic metadata, quotations, formulas, and referenced
 research remain the property of their respective authors and publishers.
