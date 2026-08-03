@@ -5,6 +5,7 @@ authors: "Future Me"
 venue: "使用说明"
 published: "2026"
 read_date: "2026-08-03"
+read_at: "2026-08-03T15:37:54+08:00"
 status: "示例"
 tags: ["Workflow", "Knowledge Management"]
 one_liner: "每篇记录只保留未来回顾时最有价值的信息，并把与 Agent 的追问结论一起沉淀。"

@@ -110,6 +110,15 @@ def parse_note(path: Path) -> dict:
         datetime.strptime(str(metadata["read_date"]), "%Y-%m-%d")
     except ValueError as exc:
         raise ContentError("read_date 必须使用 YYYY-MM-DD") from exc
+    if metadata.get("read_at"):
+        try:
+            read_at = datetime.fromisoformat(str(metadata["read_at"]).replace("Z", "+00:00"))
+        except ValueError as exc:
+            raise ContentError("read_at 必须使用带时区的 ISO 8601 时间") from exc
+        if read_at.tzinfo is None:
+            raise ContentError("read_at 必须包含时区，例如 +08:00")
+        if read_at.date().isoformat() != str(metadata["read_date"]):
+            raise ContentError("read_at 的本地日期必须与 read_date 一致")
     if not str(metadata["title"]).strip() or not str(metadata["one_liner"]).strip():
         raise ContentError("title 和 one_liner 不能为空")
 
@@ -146,7 +155,11 @@ def load_papers() -> list[dict]:
         raise ContentError("\n".join(errors))
     if not papers:
         raise ContentError("content/papers 中没有阅读记录")
-    return sorted(papers, key=lambda item: (item["read_date"], item["title"]), reverse=True)
+    return sorted(
+        papers,
+        key=lambda item: (item["read_date"], item.get("read_at", ""), item["title"]),
+        reverse=True,
+    )
 
 
 def write_data(path: Path, papers: list[dict]) -> None:

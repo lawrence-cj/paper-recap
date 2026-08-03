@@ -5,6 +5,7 @@ authors: "作者，多个作者可写 et al."
 venue: "会议 / 期刊 / arXiv"
 published: "2026"
 read_date: "YYYY-MM-DD"
+read_at: "YYYY-MM-DDTHH:MM:SS+08:00"
 status: "已精读"
 tags: ["主题一", "主题二"]
 one_liner: "如果半年后只能记住一句话，就是这一句。"

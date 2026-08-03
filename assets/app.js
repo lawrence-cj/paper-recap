@@ -170,7 +170,9 @@
     });
     return filtered.sort((a, b) => {
       if (state.sort === "title") return a.title.localeCompare(b.title);
-      return b.read_date.localeCompare(a.read_date);
+      return b.read_date.localeCompare(a.read_date)
+        || (b.read_at || "").localeCompare(a.read_at || "")
+        || a.title.localeCompare(b.title);
     });
   }
 

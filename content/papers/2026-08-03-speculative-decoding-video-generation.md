@@ -5,6 +5,7 @@ authors: "Yuezhou Hu, Jintao Zhang"
 venue: "arXiv"
 published: "2026"
 read_date: "2026-08-03"
+read_at: "2026-08-03T17:09:07+08:00"
 status: "已精读"
 tags: ["Video Diffusion", "Autoregressive Generation", "Speculative Decoding", "Acceleration"]
 one_liner: "SDVG 让 1.3B 模型先生成 autoregressive video block，再用最差帧 ImageReward 决定直接接受还是交给 14B 重做，以放弃严格 target 分布为代价换取真正跳过大模型计算。"

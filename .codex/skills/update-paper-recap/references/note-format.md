@@ -12,6 +12,7 @@ Required fields:
 - `venue`: conference, journal, arXiv, or `待补充`.
 - `published`: four-digit year as quoted text, or `待补充`.
 - `read_date`: local date in `YYYY-MM-DD`.
+- `read_at`: local reading time in timezone-aware ISO 8601 format, such as `2026-08-03T22:35:13+08:00`. Require it for every new note so papers from the same day sort in true reading order. Legacy notes may omit it.
 - `status`: normally `待读`, `略读`, `已读`, `已精读`, or `复现中`.
 - `tags`: inline quoted list with two to five stable tags.
 - `one_liner`: one standalone sentence that restores the paper's core memory.
