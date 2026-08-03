@@ -1,6 +1,7 @@
 (() => {
   const data = window.PAPER_RECAP_DATA || { generated_at: "", papers: [] };
   const state = { query: "", tag: "全部", sort: "newest" };
+  let lockedScrollY = 0;
   const elements = {
     grid: document.querySelector("#paper-grid"),
     tags: document.querySelector("#tag-list"),
@@ -119,6 +120,26 @@
       .format(new Date(`${value}T00:00:00`));
   }
 
+  function syncDialogScrollLock() {
+    const root = document.documentElement;
+    const body = document.body;
+    const shouldLock = elements.dialog.open || elements.imageDialog.open;
+    const isLocked = root.classList.contains("dialog-open");
+
+    if (shouldLock && !isLocked) {
+      lockedScrollY = window.scrollY;
+      root.classList.add("dialog-open");
+      body.style.top = `-${lockedScrollY}px`;
+      return;
+    }
+
+    if (!shouldLock && isLocked) {
+      root.classList.remove("dialog-open");
+      body.style.removeProperty("top");
+      window.scrollTo(0, lockedScrollY);
+    }
+  }
+
   function allTags() {
     const counts = new Map();
     data.papers.forEach((paper) => paper.tags.forEach((tag) => counts.set(tag, (counts.get(tag) || 0) + 1)));
@@ -187,6 +208,7 @@
       ${paper.paper_url ? `<a class="paper-link" href="${escapeHtml(paper.paper_url)}" target="_blank" rel="noopener">查看原论文 ↗</a>` : ""}`;
     renderMath(elements.dialogContent);
     if (!elements.dialog.open) elements.dialog.showModal();
+    syncDialogScrollLock();
     if (updateHash) history.pushState({ slug }, "", `#paper=${encodeURIComponent(slug)}`);
   }
 
@@ -201,6 +223,7 @@
     elements.imageDialogCaption.textContent = button.dataset.imageCaption || "";
     elements.imageDialogCaption.hidden = !button.dataset.imageCaption;
     elements.imageDialog.showModal();
+    syncDialogScrollLock();
   }
 
   function openFromHash() {
@@ -235,7 +258,10 @@
   });
   document.querySelector("#dialog-close").addEventListener("click", () => closePaper());
   elements.dialog.addEventListener("click", (event) => { if (event.target === elements.dialog) closePaper(); });
-  elements.dialog.addEventListener("close", () => { if (location.hash.startsWith("#paper=")) closePaper(); });
+  elements.dialog.addEventListener("close", () => {
+    syncDialogScrollLock();
+    if (location.hash.startsWith("#paper=")) closePaper();
+  });
   elements.dialogContent.addEventListener("click", (event) => {
     const button = event.target.closest(".paper-image-button");
     if (button) openImage(button);
@@ -243,6 +269,7 @@
   document.querySelector("#image-dialog-close").addEventListener("click", () => elements.imageDialog.close());
   elements.imageDialog.addEventListener("close", () => {
     elements.imageDialogImage.removeAttribute("src");
+    syncDialogScrollLock();
   });
   document.addEventListener("keydown", (event) => {
     if (event.key === "/" && document.activeElement !== elements.search) { event.preventDefault(); elements.search.focus(); }

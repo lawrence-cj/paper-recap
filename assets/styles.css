@@ -28,6 +28,16 @@
 
 html { scroll-behavior: smooth; }
 
+html.dialog-open { overflow: hidden; }
+
+html.dialog-open body {
+  position: fixed;
+  right: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
 body {
   margin: 0;
   min-width: 320px;
@@ -114,7 +124,7 @@ kbd { padding: 0 6px; border: 1px solid var(--line); border-radius: 4px; color: 
 
 footer { width: min(1180px, calc(100% - 40px)); margin: 0 auto; padding: 28px 0 40px; display: flex; justify-content: space-between; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.74rem; }
 
-dialog { width: min(820px, calc(100% - 32px)); max-height: calc(100vh - 32px); padding: 0; border: 0; border-radius: 2px; color: var(--ink); background: var(--paper); box-shadow: var(--shadow); }
+dialog { width: min(820px, calc(100% - 32px)); max-height: calc(100vh - 32px); padding: 0; overflow-y: auto; overscroll-behavior: contain; border: 0; border-radius: 2px; color: var(--ink); background: var(--paper); box-shadow: var(--shadow); }
 dialog::backdrop { background: rgba(20, 19, 17, 0.65); backdrop-filter: blur(5px); }
 .paper-detail { min-height: 70vh; padding: clamp(34px, 7vw, 76px); position: relative; }
 .dialog-close { position: absolute; top: 22px; right: 24px; width: 38px; height: 38px; border: 1px solid var(--line); border-radius: 50%; color: var(--ink); background: transparent; font-size: 1.45rem; line-height: 1; }
@@ -138,7 +148,7 @@ dialog::backdrop { background: rgba(20, 19, 17, 0.65); backdrop-filter: blur(5px
 .paper-figure figcaption { margin-top: 10px; color: var(--muted); font-size: 0.78rem; line-height: 1.55; text-align: center; }
 .image-dialog { width: min(1280px, calc(100% - 28px)); max-height: calc(100vh - 28px); padding: 0; overflow: visible; background: #111; }
 .image-dialog::backdrop { background: rgba(10, 10, 10, 0.88); backdrop-filter: blur(6px); }
-.image-dialog figure { max-height: calc(100vh - 28px); margin: 0; overflow: auto; }
+.image-dialog figure { max-height: calc(100vh - 28px); margin: 0; overflow: auto; overscroll-behavior: contain; }
 .image-dialog img { display: block; width: 100%; height: auto; max-height: calc(100vh - 90px); object-fit: contain; }
 .image-dialog figcaption { padding: 14px 54px 16px 20px; color: #f4f1e8; font-size: 0.78rem; line-height: 1.5; }
 .image-dialog-close { z-index: 1; top: 14px; right: 14px; color: #f4f1e8; border-color: rgba(255,255,255,0.42); background: rgba(0,0,0,0.48); }
