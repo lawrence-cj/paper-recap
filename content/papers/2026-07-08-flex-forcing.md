@@ -17,6 +17,8 @@ one_liner: "Flex-Forcing 让同一视频 diffusion 权重在任意 chunk 内双�
 
 ## 核心方法
 
+![Flex-Forcing flexible chunking and mixed attention](media/flex-forcing/method-overview.webp "论文 Figure 3：Flex-Forcing 在帧与去噪时间上改变 chunk 粒度，并混合 causal/non-causal attention 与 K-Projection。来源：Flex-Forcing（Xinyin Ma et al.），CC BY 4.0。")
+
 - 按视频时间与 denoising 时间对 token 做二维 flexible chunking。
 - 同一 chunk 内允许 bidirectional attention，不同 chunk 之间使用 causal attention；改变 partition 即可改变推理模式。
 - 训练随机采样 2–10 的 chunk size 和嵌套切分，让模型见过多种因果粒度。

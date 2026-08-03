@@ -1,7 +1,7 @@
 ---
 title: "TurboServe: Serving Streaming Video Generation Efficiently and Economically"
 paper_url: "https://arxiv.org/abs/2606.19271"
-authors: "待补充"
+authors: "Youhe Jiang et al."
 venue: "arXiv"
 published: "2026"
 read_date: "2026-07-06"

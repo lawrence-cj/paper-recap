@@ -1,7 +1,7 @@
 ---
-title: "Why Larger Models Learn More: The Role of Capacity in Data Difficulty"
+title: "Why Larger Models Learn More: Effects of Capacity, Interference, and Rare-Task Retention"
 paper_url: "https://arxiv.org/abs/2605.29548"
-authors: "待补充"
+authors: "Jing Huang et al."
 venue: "arXiv"
 published: "2026"
 read_date: "2026-06-26"
@@ -16,6 +16,8 @@ one_liner: "数据难度不是样本的固定属性：大模型能从小模型�
 训练数据常按 loss 或某个静态 difficulty score 排序，但高 loss 可能同时表示“信息丰富但尚未学会”与“标注错误或不可学习”。论文关注模型容量如何改变样本的可学习范围，以及为何大模型能从更多困难数据中获益。
 
 ## 核心方法
+
+![Model scaling and learnable distribution regions](media/why-larger-models-learn-more/method-overview.webp "论文 Figure 1：数据扩展能触及的 loss 区域与必须依靠模型容量扩展才能学习的区域。来源：Why Larger Models Learn More（Jing Huang et al.），CC BY 4.0。")
 
 - 将难度视为模型、训练阶段和数据共同决定的量，而不是数据集的永久标签。
 - 比较不同容量模型在不同数据 bucket 上的 loss 水平、下降速度与泛化收益。

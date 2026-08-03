@@ -1,7 +1,7 @@
 ---
 title: "Motion Attribution for Video Generation"
 paper_url: "https://arxiv.org/abs/2601.08828"
-authors: "待补充"
+authors: "Xindi Wu et al."
 venue: "arXiv"
 published: "2026"
 read_date: "2026-07-07"
@@ -16,6 +16,8 @@ one_liner: "Motive 用运动区域加权的 diffusion gradient 衡量训练视�
 视频微调数据中，大量样本的运动弱、背景占主导或与目标 motion distribution 无关。随机抽样浪费训练预算，按 optical-flow magnitude 又无法判断某条视频是否真的会推动模型学到 query 所需运动；论文研究训练样本级 motion attribution。
 
 ## 核心方法
+
+![Motive motion attribution pipeline](media/motion-attribution/method-overview.webp "论文 Figure 1：Motive 从运动检测与 loss mask 生成 motion gradient，再通过投影和 influence matrix 排序训练数据。来源：Motion Attribution for Video Generation（Xindi Wu et al.），CC BY 4.0。")
 
 - 用 AllTracker 得到稠密轨迹/光流并构造 motion mask，使归因聚焦于运动区域而非静态背景。
 - 对候选训练视频和目标 query 视频计算 motion-weighted diffusion loss gradient。

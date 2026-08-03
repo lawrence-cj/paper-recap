@@ -1,8 +1,8 @@
 ---
-title: "FinePhyEval: Evaluating Physical Consistency in Video Generation with PQSG"
+title: "Physics Question Scene Graph: Fine-grained Evaluation of Physical Plausibility in Text-to-Video Generation"
 paper_url: "https://arxiv.org/abs/2606.25306"
-authors: "待补充"
-venue: "arXiv"
+authors: "Atin Pothiraj et al."
+venue: "ECCV 2026"
 published: "2026"
 read_date: "2026-06-25"
 status: "已读"
@@ -16,6 +16,8 @@ one_liner: "PQSG 把 prompt 拆成对象、动作和物理关系的提问图，�
 视频的物理一致性包含接触、重力、材料变化、守恒和事件顺序，单一 VLM 打分既不稳定也难定位错误。FinePhyEval 希望建立带人工校准的 benchmark，并用结构化问题图让自动评估更细粒度。
 
 ## 核心方法
+
+![PQSG fine-grained evaluation graph](media/pqsg-finephyeval/method-overview.webp "论文 Figure 2：PQSG 将对象、动作和物理问题组织为依赖图，并保留逐题回答与类别分数。来源：Physics Question Scene Graph（Atin Pothiraj et al.），CC BY 4.0。")
 
 - 从 prompt 解析对象、动作、状态和物理关系，构建 Prompt Question Scene Graph（PQSG）。
 - 将每条要求转为可由视频证据回答的 yes/no 或分级问题。

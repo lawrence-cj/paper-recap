@@ -17,6 +17,8 @@ one_liner: "Resampling Forcing 先用模型自身把真实历史扰动成推理�
 
 ## 核心方法
 
+![Long-video comparison for Resampling Forcing](media/resampling-forcing/method-overview.webp "论文 Figure 2：Teacher Forcing、短 teacher 蒸馏的 Self Forcing 与原生 15 秒训练的 Resampling Forcing 长视频对比。来源：End-to-End Training for Autoregressive Video Diffusion（Yuwei Guo et al.），CC BY 4.0。")
+
 - 第一遍 **self-resampling**：从真实历史出发，在噪声强度 $s=0.6$ 处加入扰动，按真实自回归顺序用一次 Euler 更新生成“像模型自己犯错”的历史。
 - 将该 dirty history detach，阻断穿过第一遍 rollout 的梯度。
 - 第二遍在 dirty history 条件下，用正常 paired flow-matching 目标预测干净 ground-truth future：
