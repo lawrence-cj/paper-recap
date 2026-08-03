@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="一个为快速回顾而设计的个人论文阅读库。" />
+    <meta name="theme-color" content="#f4f1e8" />
+    <title>Paper Recap · 论文回顾库</title>
+    <link rel="stylesheet" href="assets/styles.css" />
+    <script src="assets/papers.js" defer></script>
+    <script src="assets/app.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="./" aria-label="Paper Recap 首页">
+        <span class="brand-mark" aria-hidden="true">P.</span>
+        <span>Paper Recap</span>
+      </a>
+      <div class="header-actions">
+        <span class="last-updated" id="last-updated"></span>
+        <button class="icon-button" id="theme-toggle" type="button" aria-label="切换明暗主题">◐</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <p class="eyebrow">READ SLOWLY · RECALL QUICKLY</p>
+        <h1 id="page-title">把读过的 paper，<br /><em>变成记得住的知识。</em></h1>
+        <p class="hero-copy">不是论文收藏夹，而是为未来的自己准备的最短回忆路径。</p>
+
+        <dl class="stats" aria-label="阅读统计">
+          <div><dt id="stat-papers">0</dt><dd>篇记录</dd></div>
+          <div><dt id="stat-tags">0</dt><dd>个主题</dd></div>
+          <div><dt id="stat-days">0</dt><dd>天持续阅读</dd></div>
+        </dl>
+      </section>
+
+      <section class="library" aria-labelledby="library-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-index">01 / LIBRARY</p>
+            <h2 id="library-title">阅读记录</h2>
+          </div>
+          <label class="search">
+            <span aria-hidden="true">⌕</span>
+            <input id="search-input" type="search" placeholder="搜索标题、作者、观点…" autocomplete="off" />
+            <kbd>/</kbd>
+          </label>
+        </div>
+
+        <div class="filters">
+          <div class="tag-list" id="tag-list" aria-label="按标签筛选"></div>
+          <label class="sort-control">排序
+            <select id="sort-select">
+              <option value="newest">最近阅读</option>
+              <option value="rating">最高评分</option>
+              <option value="title">标题 A–Z</option>
+            </select>
+          </label>
+        </div>
+
+        <p class="result-count" id="result-count" aria-live="polite"></p>
+        <div class="paper-grid" id="paper-grid"></div>
+        <div class="empty-state" id="empty-state" hidden>
+          <span>∅</span>
+          <h3>没有匹配的记录</h3>
+          <p>换个关键词或清除标签试试。</p>
+          <button type="button" id="clear-filters">清除筛选</button>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>Built for the future me.</p>
+      <p>内容保存在 GitHub，知识永远属于你。</p>
+    </footer>
+
+    <dialog id="paper-dialog" aria-labelledby="dialog-title">
+      <article class="paper-detail">
+        <button class="dialog-close" id="dialog-close" type="button" aria-label="关闭详情">×</button>
+        <div id="dialog-content"></div>
+      </article>
+    </dialog>
+
+    <noscript>这个网站需要 JavaScript 才能展示论文记录。</noscript>
+  </body>
+</html>

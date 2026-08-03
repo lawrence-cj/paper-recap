@@ -1,0 +1,4 @@
+interface:
+  display_name: "Update Paper Recap"
+  short_description: "Add paper notes and refresh the recap site"
+  default_prompt: "Use $update-paper-recap to add this paper summary to my recap site."
