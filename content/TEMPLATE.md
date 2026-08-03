@@ -6,7 +6,6 @@ venue: "会议 / 期刊 / arXiv"
 published: "2026"
 read_date: "YYYY-MM-DD"
 status: "已精读"
-rating: 4
 tags: ["主题一", "主题二"]
 one_liner: "如果半年后只能记住一句话，就是这一句。"
 ---

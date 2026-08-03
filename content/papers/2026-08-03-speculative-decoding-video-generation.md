@@ -6,7 +6,6 @@ venue: "arXiv"
 published: "2026"
 read_date: "2026-08-03"
 status: "已精读"
-rating: 3
 tags: ["Video Diffusion", "Autoregressive Generation", "Speculative Decoding", "Acceleration"]
 one_liner: "SDVG 让 1.3B 模型先生成 autoregressive video block，再用最差帧 ImageReward 决定直接接受还是交给 14B 重做，以放弃严格 target 分布为代价换取真正跳过大模型计算。"
 ---
@@ -92,7 +91,7 @@ I2V 可能比纯 T2V 更适合：输入图像已经锚定身份、构图和纹�
 
 但从系统视角，它的收益恰恰来自不做严格 target verification。对 compute-bound video DiT，批量验证很可能接近线性增加计算，因此 exact speculative diffusion 虽然数学上漂亮，却未必比 target-only 更快。更值得继续研究的是低成本 latent verifier、风险可校准的 target-skipping，以及 full-clip I2V 中的 draft-guided 时空选择性 refinement。
 
-当前适合作为动态大小模型协作的 baseline，而不是直接接受其“speculative decoding”命名或投入传统 LLM 式 batch verification。评分暂用中性的 3/5；若要复现，第一步应测量 $V(K)/T$ 的真实 scaling、target cache 构造和 verifier 开销，而不是只看接受率。
+当前适合作为动态大小模型协作的 baseline，而不是直接接受其“speculative decoding”命名或投入传统 LLM 式 batch verification。若要复现，第一步应测量 $V(K)/T$ 的真实 scaling、target cache 构造和 verifier 开销，而不是只看接受率。
 
 ## 下次只看这些
 

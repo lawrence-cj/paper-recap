@@ -6,7 +6,6 @@ venue: "arXiv"
 published: "2026"
 read_date: "2026-08-03"
 status: "已精读"
-rating: 3
 tags: ["Video Generation", "Physical Reasoning", "Diffusion Models", "Agentic Systems"]
 one_liner: "先用 Agent 编写并执行 Blender 程序，将物理过程落实为逐帧白模草稿，再让视频编辑 DiT 只负责写实化，从而把动态推理与视觉生成解耦。"
 ---

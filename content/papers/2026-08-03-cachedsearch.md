@@ -6,7 +6,6 @@ venue: "arXiv"
 published: "2026"
 read_date: "2026-08-03"
 status: "已精读"
-rating: 3
 tags: ["Video Generation", "Diffusion Models", "Test-Time Search", "Inference Acceleration"]
 one_liner: "用带缓存的廉价 rollout 只负责保持候选排序，再以胜出 seed 完整重生成，将视频 best-of-N 搜索改造成 explore-cheap、commit-full。"
 ---

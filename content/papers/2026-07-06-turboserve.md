@@ -6,7 +6,6 @@ venue: "arXiv"
 published: "2026"
 read_date: "2026-07-06"
 status: "已读"
-rating: 3
 tags: ["Video Generation", "Serving Systems", "Scheduling", "Autoscaling"]
 one_liner: "TurboServe 把流式视频生成视为有持续状态的长会话，通过 chunk 合批、CPU 挂起、边界迁移和闭环扩缩容同时压低尾延迟与 GPU 成本。"
 ---

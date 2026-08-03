@@ -6,7 +6,6 @@ venue: "arXiv"
 published: "2026"
 read_date: "2026-07-07"
 status: "已精读"
-rating: 3
 tags: ["Video Generation", "Data Selection", "Motion", "Influence Functions"]
 one_liner: "Motive 用运动区域加权的 diffusion gradient 衡量训练视频对目标运动 query 的影响，从海量数据中挑出少量真正能改善运动的样本。"
 ---

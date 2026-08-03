@@ -116,7 +116,6 @@ kbd { padding: 0 6px; border: 1px solid var(--line); border-radius: 4px; color: 
 .card-tags span { color: var(--muted); font-size: 0.7rem; }
 .arrow { width: 36px; height: 36px; flex: 0 0 auto; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 50%; transition: 160ms ease; }
 .paper-card:hover .arrow { transform: translate(2px, -2px); border-color: var(--accent); color: var(--accent); }
-.rating { letter-spacing: 0.08em; color: var(--accent); }
 
 .empty-state { padding: 80px 20px; text-align: center; border-bottom: 1px solid var(--line); }
 .empty-state span { font-family: Georgia, serif; font-size: 3rem; color: var(--accent); }

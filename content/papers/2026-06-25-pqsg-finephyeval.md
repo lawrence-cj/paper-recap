@@ -6,7 +6,6 @@ venue: "ECCV 2026"
 published: "2026"
 read_date: "2026-06-25"
 status: "已读"
-rating: 3
 tags: ["Video Evaluation", "Physical Consistency", "Reward Model", "Benchmark"]
 one_liner: "PQSG 把 prompt 拆成对象、动作和物理关系的提问图，再由 VLM 对视频逐项回答，用细粒度证据代替单一物理总分。"
 ---

@@ -24,7 +24,7 @@ IMAGE_PATTERN = re.compile(
 )
 REQUIRED_FIELDS = {
     "title", "paper_url", "authors", "venue", "published", "read_date",
-    "status", "rating", "tags", "one_liner",
+    "status", "tags", "one_liner",
 }
 REQUIRED_SECTIONS = (
     "研究问题", "核心方法", "关键发现", "我的提问",
@@ -106,8 +106,6 @@ def parse_note(path: Path) -> dict:
         raise ContentError("tags 必须是至少含一个主题的列表")
     if not all(isinstance(tag, str) and tag.strip() for tag in metadata["tags"]):
         raise ContentError("tags 中的每一项都必须是非空文本")
-    if not isinstance(metadata["rating"], int) or not 1 <= metadata["rating"] <= 5:
-        raise ContentError("rating 必须是 1 到 5 的整数")
     try:
         datetime.strptime(str(metadata["read_date"]), "%Y-%m-%d")
     except ValueError as exc:

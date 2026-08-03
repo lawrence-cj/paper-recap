@@ -6,7 +6,6 @@ venue: "arXiv"
 published: "2025"
 read_date: "2026-07-08"
 status: "已精读"
-rating: 3
 tags: ["Video Diffusion", "Autoregressive Generation", "Exposure Bias", "Long Video"]
 one_liner: "Resampling Forcing 先用模型自身把真实历史扰动成推理期风格的错误历史，再 stop-gradient 地用标准 flow matching 学会在这种历史上继续生成。"
 ---

@@ -13,7 +13,6 @@ Required fields:
 - `published`: four-digit year as quoted text, or `待补充`.
 - `read_date`: local date in `YYYY-MM-DD`.
 - `status`: normally `待读`, `略读`, `已读`, `已精读`, or `复现中`.
-- `rating`: integer from 1 to 5.
 - `tags`: inline quoted list with two to five stable tags.
 - `one_liner`: one standalone sentence that restores the paper's core memory.
 

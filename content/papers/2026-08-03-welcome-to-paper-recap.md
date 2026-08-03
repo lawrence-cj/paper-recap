@@ -6,7 +6,6 @@ venue: "使用说明"
 published: "2026"
 read_date: "2026-08-03"
 status: "示例"
-rating: 5
 tags: ["Workflow", "Knowledge Management"]
 one_liner: "每篇记录只保留未来回顾时最有价值的信息，并把与 Agent 的追问结论一起沉淀。"
 ---

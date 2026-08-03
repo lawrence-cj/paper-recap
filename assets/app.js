@@ -169,7 +169,6 @@
       return tagMatch && (!needle || haystack.includes(needle));
     });
     return filtered.sort((a, b) => {
-      if (state.sort === "rating") return b.rating - a.rating || b.read_date.localeCompare(a.read_date);
       if (state.sort === "title") return a.title.localeCompare(b.title);
       return b.read_date.localeCompare(a.read_date);
     });
@@ -177,14 +176,13 @@
 
   function paperCard(paper) {
     const tags = paper.tags.slice(0, 3).map((tag) => `<span>#${escapeHtml(tag)}</span>`).join("");
-    const rating = "●".repeat(paper.rating) + "○".repeat(5 - paper.rating);
     return `<article class="paper-card">
       <button class="card-button" type="button" data-slug="${escapeHtml(paper.slug)}" aria-label="打开《${escapeHtml(paper.title)}》详情">
         <div class="card-top"><span class="status">${escapeHtml(paper.status)}</span><span>${formatDate(paper.read_date)}</span></div>
         <h3>${escapeHtml(paper.title)}</h3>
         <p class="authors">${escapeHtml(paper.authors)}${paper.venue ? ` · ${escapeHtml(paper.venue)}` : ""}</p>
         <p class="one-liner">${escapeHtml(paper.one_liner)}</p>
-        <div class="card-bottom"><div><div class="card-tags">${tags}</div><div class="rating" aria-label="评分 ${paper.rating} / 5">${rating}</div></div><span class="arrow" aria-hidden="true">↗</span></div>
+        <div class="card-bottom"><div class="card-tags">${tags}</div><span class="arrow" aria-hidden="true">↗</span></div>
       </button>
     </article>`;
   }
@@ -204,7 +202,7 @@
     elements.dialogContent.innerHTML = `
       <p class="detail-kicker">${escapeHtml(paper.status)} · ${formatDate(paper.read_date)}</p>
       <h2 id="dialog-title">${escapeHtml(paper.title)}</h2>
-      <div class="detail-meta"><span>${escapeHtml(paper.authors)}</span><span>${escapeHtml(paper.venue)}</span><span>${escapeHtml(paper.published)}</span><span>评分 ${paper.rating}/5</span></div>
+      <div class="detail-meta"><span>${escapeHtml(paper.authors)}</span><span>${escapeHtml(paper.venue)}</span><span>${escapeHtml(paper.published)}</span></div>
       <p class="detail-summary">${escapeHtml(paper.one_liner)}</p>
       <div class="detail-body">${renderMarkdown(paper.body)}</div>
       ${paper.paper_url ? `<a class="paper-link" href="${escapeHtml(paper.paper_url)}" target="_blank" rel="noopener">查看原论文 ↗</a>` : ""}`;

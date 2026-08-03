@@ -27,7 +27,6 @@ Turn raw reading notes and Agent conversations into compact, durable recap entri
 
 - Keep `one_liner` specific and useful six months later; avoid generic praise.
 - Keep two to five focused tags and reuse existing tag spellings where possible.
-- Rate from 1–5 only when the user gave a rating or their judgment strongly supports one. Otherwise use `3` and state that it is a neutral placeholder in the handoff.
 - Include concrete result numbers only when supplied or verified.
 - Keep every formula needed to understand the method or result. Define symbols immediately around the equation and check delimiter balance.
 - Put distilled Q&A under `我的提问`; keep only questions that changed understanding or future action.

@@ -6,7 +6,6 @@ venue: "arXiv"
 published: "2026"
 read_date: "2026-06-26"
 status: "已读"
-rating: 3
 tags: ["Scaling Laws", "Data Difficulty", "Curriculum Learning", "Video Training"]
 one_liner: "数据难度不是样本的固定属性：大模型能从小模型视为噪声的困难样本中继续学习，因此选数应观察随容量和训练进程变化的可学习性。"
 ---
