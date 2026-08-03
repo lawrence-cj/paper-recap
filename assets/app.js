@@ -31,10 +31,25 @@
     const lines = markdown.replace(/\r/g, "").split("\n");
     const output = [];
     let listType = null;
+    let displayMath = null;
     const closeList = () => { if (listType) output.push(`</${listType}>`); listType = null; };
 
     for (const raw of lines) {
       const line = raw.trim();
+      if (displayMath !== null) {
+        displayMath.push(raw);
+        if (line.endsWith("$$")) {
+          output.push(`<div class="math-block">${escapeHtml(displayMath.join("\n"))}</div>`);
+          displayMath = null;
+        }
+        continue;
+      }
+      if (line.startsWith("$$")) {
+        closeList();
+        if (line.length > 2 && line.endsWith("$$")) output.push(`<div class="math-block">${escapeHtml(line)}</div>`);
+        else displayMath = [raw];
+        continue;
+      }
       if (!line) { closeList(); continue; }
       const heading = line.match(/^(##|###)\s+(.+)$/);
       if (heading) {
@@ -59,8 +74,26 @@
       if (line.startsWith("> ")) output.push(`<blockquote>${inlineMarkdown(line.slice(2))}</blockquote>`);
       else output.push(`<p>${inlineMarkdown(line)}</p>`);
     }
+    if (displayMath !== null) output.push(`<pre class="math-error">${escapeHtml(displayMath.join("\n"))}</pre>`);
     closeList();
     return output.join("");
+  }
+
+  function renderMath(container) {
+    if (typeof window.renderMathInElement !== "function") return;
+    window.renderMathInElement(container, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false },
+        { left: "\\(", right: "\\)", display: false },
+        { left: "\\[", right: "\\]", display: true },
+        { left: "\\begin{equation}", right: "\\end{equation}", display: true },
+        { left: "\\begin{align}", right: "\\end{align}", display: true },
+        { left: "\\begin{gather}", right: "\\end{gather}", display: true },
+      ],
+      throwOnError: false,
+      strict: "warn",
+    });
   }
 
   function formatDate(value) {
@@ -135,6 +168,7 @@
       <p class="detail-summary">${escapeHtml(paper.one_liner)}</p>
       <div class="detail-body">${renderMarkdown(paper.body)}</div>
       ${paper.paper_url ? `<a class="paper-link" href="${escapeHtml(paper.paper_url)}" target="_blank" rel="noopener">查看原论文 ↗</a>` : ""}`;
+    renderMath(elements.dialogContent);
     if (!elements.dialog.open) elements.dialog.showModal();
     if (updateHash) history.pushState({ slug }, "", `#paper=${encodeURIComponent(slug)}`);
   }

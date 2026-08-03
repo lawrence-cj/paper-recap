@@ -21,6 +21,8 @@
 
 项目内的 `$update-paper-recap` skill 会让 Agent 自动完成：核对论文身份、整理成固定结构、创建记录、校验内容并构建网站。完整记录样式见 `content/TEMPLATE.md`，但日常无需手填。
 
+公式会以 LaTeX 保留并在网页中排版。行内公式使用 `$...$`，独立公式使用 `$$...$$`；日常仍然只需把原公式交给 Agent，不需要手动转格式。
+
 > 注意：GitHub Pages 默认是公开网站。不要提交公司机密、未公开研究、访问凭据或私人敏感信息。
 
 ## 第一次发布
@@ -31,6 +33,26 @@
 4. 首次工作流完成后，网站地址通常是 `https://<你的用户名>.github.io/paper-recap/`。
 
 如果仓库直接命名为 `<你的用户名>.github.io`，网站地址就是 `https://<你的用户名>.github.io/`。
+
+## 在每台 Mac / 集群注册 Skill
+
+首次使用：
+
+```bash
+git clone git@github.com:lawrence-cj/paper-recap.git
+cd paper-recap
+python3 scripts/install_skill.py
+```
+
+安装脚本会把仓库内的 skill 注册到 `$CODEX_HOME/skills/update-paper-recap`；未配置 `CODEX_HOME` 时使用 `~/.codex/skills/update-paper-recap`。它使用符号链接，因此以后 `git pull` 会立即更新所有新会话所用的 skill，无需重复复制。
+
+每台机器各自执行一次。之后在任意新会话中直接说：
+
+```text
+使用 $update-paper-recap，把下面的总结更新到网站：……
+```
+
+多台机器同时更新时，skill 会先同步 `origin/main`，只提交当前论文记录，并在推送竞争时自动 rebase 重试。若两台机器同时修改同一篇论文，则停止自动合并，保留双方内容等待人工选择。
 
 ## 本地检查
 

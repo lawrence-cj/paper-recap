@@ -78,6 +78,10 @@ def parse_note(path: Path) -> dict:
         raise ContentError("title 和 one_liner 不能为空")
 
     body = match.group(2).strip()
+    if body.count("$$") % 2:
+        raise ContentError("独立公式的 $$ 分隔符没有成对闭合")
+    if body.count("\\[") != body.count("\\]"):
+        raise ContentError("独立公式的 \\[ 与 \\] 分隔符没有成对闭合")
     headings = set(re.findall(r"^##\s+(.+?)\s*$", body, re.MULTILINE))
     missing_sections = [section for section in REQUIRED_SECTIONS if section not in headings]
     if missing_sections:

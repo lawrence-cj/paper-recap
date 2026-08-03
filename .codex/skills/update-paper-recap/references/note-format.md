@@ -32,3 +32,24 @@ Use these headings verbatim and in this order:
 7. `## 下次只看这些` — one to three numbered memory anchors or actions.
 
 Avoid a redundant H1 title in the body. Do not paste abstracts or long chat transcripts.
+
+## Mathematics
+
+Preserve equations as editable LaTeX, not images:
+
+```markdown
+The noise prediction at timestep $t$ is $\epsilon_\theta(x_t, t)$.
+
+$$
+\mathcal{L}_{\mathrm{simple}}
+= \mathbb{E}_{t,x_0,\epsilon}
+\left[\lVert \epsilon - \epsilon_\theta(x_t,t) \rVert_2^2\right].
+$$
+```
+
+- Use `$...$` for short inline expressions.
+- Put `$$` on their own lines around important display equations.
+- Keep multiline LaTeX inside one `$$...$$` block.
+- Define symbols in nearby prose and state why the equation matters.
+- Prefer standard KaTeX-supported commands. If a paper uses custom macros, expand them into standard LaTeX.
+- Do not place math delimiters inside backticks; code spans intentionally skip formula rendering.

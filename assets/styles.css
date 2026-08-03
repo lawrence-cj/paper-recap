@@ -128,6 +128,10 @@ dialog::backdrop { background: rgba(20, 19, 17, 0.65); backdrop-filter: blur(5px
 .detail-body ul, .detail-body ol { padding-left: 1.25rem; }
 .detail-body blockquote { margin: 24px 0; padding: 4px 0 4px 18px; border-left: 2px solid var(--accent); color: var(--muted); }
 .detail-body code { padding: 2px 5px; border-radius: 4px; background: var(--paper-deep); font-size: 0.88em; }
+.detail-body .math-block { max-width: 100%; margin: 26px 0; padding: 15px 0; overflow-x: auto; overflow-y: hidden; text-align: center; }
+.detail-body .katex-display { margin: 0; overflow-x: auto; overflow-y: hidden; }
+.detail-body .katex { font-size: 1.08em; }
+.math-error { padding: 14px; overflow-x: auto; border: 1px solid var(--accent); color: var(--accent); background: var(--paper-deep); }
 .paper-link { display: inline-flex; margin-top: 40px; padding: 10px 16px; border: 1px solid var(--ink); border-radius: 99px; text-decoration: none; font-size: 0.8rem; }
 .paper-link:hover { color: var(--paper); background: var(--ink); }
 

@@ -20,6 +20,12 @@ one_liner: "如果半年后只能记住一句话，就是这一句。"
 - 方法的关键机制
 - 与已有方法最本质的区别
 
+行内公式使用 `$x_t = f(x_{t-1})$`。独立公式使用：
+
+$$
+\mathcal{L}(\theta) = \mathbb{E}_{x \sim p_{\mathrm{data}}}\left[\ell(f_\theta(x), y)\right]
+$$
+
 ## 关键发现
 
 - 最重要的实验结论与必要数字
