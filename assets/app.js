@@ -10,6 +10,9 @@
     empty: document.querySelector("#empty-state"),
     dialog: document.querySelector("#paper-dialog"),
     dialogContent: document.querySelector("#dialog-content"),
+    imageDialog: document.querySelector("#image-dialog"),
+    imageDialogImage: document.querySelector("#image-dialog-image"),
+    imageDialogCaption: document.querySelector("#image-dialog-caption"),
   };
 
   const escapeHtml = (value = "") => String(value)
@@ -51,6 +54,20 @@
         continue;
       }
       if (!line) { closeList(); continue; }
+      const image = line.match(/^!\[([^\]]+)\]\((media\/[^\s)"']+\.(?:png|jpe?g|webp))(?:\s+"([^"]+)")?\)$/i);
+      if (image) {
+        closeList();
+        const altText = image[1];
+        const imagePath = image[2];
+        const caption = image[3] || "";
+        output.push(`<figure class="paper-figure">
+          <button class="paper-image-button" type="button" data-image-src="${escapeHtml(imagePath)}" data-image-alt="${escapeHtml(altText)}" data-image-caption="${escapeHtml(caption)}" aria-label="放大查看：${escapeHtml(altText)}">
+            <img src="${escapeHtml(imagePath)}" alt="${escapeHtml(altText)}" loading="lazy" decoding="async" />
+          </button>
+          ${caption ? `<figcaption>${inlineMarkdown(caption)}</figcaption>` : ""}
+        </figure>`);
+        continue;
+      }
       const heading = line.match(/^(##|###)\s+(.+)$/);
       if (heading) {
         closeList();
@@ -178,6 +195,14 @@
     if (updateHash && location.hash.startsWith("#paper=")) history.pushState({}, "", location.pathname + location.search);
   }
 
+  function openImage(button) {
+    elements.imageDialogImage.src = button.dataset.imageSrc;
+    elements.imageDialogImage.alt = button.dataset.imageAlt || "论文图片";
+    elements.imageDialogCaption.textContent = button.dataset.imageCaption || "";
+    elements.imageDialogCaption.hidden = !button.dataset.imageCaption;
+    elements.imageDialog.showModal();
+  }
+
   function openFromHash() {
     const match = location.hash.match(/^#paper=(.+)$/);
     if (match) openPaper(decodeURIComponent(match[1]), false);
@@ -211,6 +236,14 @@
   document.querySelector("#dialog-close").addEventListener("click", () => closePaper());
   elements.dialog.addEventListener("click", (event) => { if (event.target === elements.dialog) closePaper(); });
   elements.dialog.addEventListener("close", () => { if (location.hash.startsWith("#paper=")) closePaper(); });
+  elements.dialogContent.addEventListener("click", (event) => {
+    const button = event.target.closest(".paper-image-button");
+    if (button) openImage(button);
+  });
+  document.querySelector("#image-dialog-close").addEventListener("click", () => elements.imageDialog.close());
+  elements.imageDialog.addEventListener("close", () => {
+    elements.imageDialogImage.removeAttribute("src");
+  });
   document.addEventListener("keydown", (event) => {
     if (event.key === "/" && document.activeElement !== elements.search) { event.preventDefault(); elements.search.focus(); }
   });

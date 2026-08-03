@@ -15,12 +15,13 @@ Turn raw reading notes and Agent conversations into compact, durable recap entri
 4. Identify the paper from the supplied title, URL, PDF, or context. Browse authoritative sources only when identity, authors, venue, year, or claims require verification. Never invent missing bibliographic facts.
 5. Read `references/note-format.md` before creating or substantially restructuring an entry.
 6. Search `content/papers/` by title, URL, and slug. Update the existing record instead of creating a duplicate.
-7. Create or edit exactly one Markdown file in `content/papers/`. Name new files `YYYY-MM-DD-short-kebab-slug.md`, using the read date and a stable English slug.
+7. Create or edit exactly one Markdown note in `content/papers/`. Name new files `YYYY-MM-DD-short-kebab-slug.md`, using the read date and a stable English slug. When figures materially improve recall, add only that note's media under `content/media/<slug>/`.
 8. Preserve the user's own judgment and disagreements. Condense Agent answers, remove conversational filler, and mark unknowable gaps as `待补充`; do not silently turn inference into fact.
 9. Preserve important equations in LaTeX. Use `$...$` for inline math and `$$...$$` for display math; never replace formulas with vague prose or screenshots.
-10. Run `python3 .codex/skills/update-paper-recap/scripts/validate_update.py`. Fix every reported error.
-11. Treat “更新到 Paper Recap” as authorization to commit this recap file and push it for publication unless the user says local-only. Stage only the intended note, commit with `content: add <paper slug>` or `content: update <paper slug>`, run `git pull --rebase origin main`, revalidate, then `git push origin main`.
-12. If the push loses a concurrent race, pull with rebase and retry once. Stop on a content conflict, preserve both versions, and ask the user to choose; never resolve conflicting judgments by guessing.
+10. When adding figures, use the PDF skill to render and visually inspect the relevant pages, crop only the meaningful figure, and optimize it without sacrificing labels or legibility. Verify reuse permission because the site is public; include figure number, source, and license in the Markdown caption. If permission is unclear, do not copy the figure.
+11. Run `python3 .codex/skills/update-paper-recap/scripts/validate_update.py`. Fix every reported error.
+12. Treat “更新到 Paper Recap” as authorization to commit this recap note and its scoped media files and push them for publication unless the user says local-only. Stage only the intended note and `content/media/<slug>/`, commit with `content: add <paper slug>` or `content: update <paper slug>`, run `git pull --rebase origin main`, revalidate, then `git push origin main`.
+13. If the push loses a concurrent race, pull with rebase and retry once. Stop on a content conflict, preserve both versions, and ask the user to choose; never resolve conflicting judgments by guessing.
 
 ## Editing rules
 
@@ -32,6 +33,7 @@ Turn raw reading notes and Agent conversations into compact, durable recap entri
 - Put distilled Q&A under `我的提问`; keep only questions that changed understanding or future action.
 - Make `下次只看这些` one to three items. This is the fastest recap path.
 - Do not edit generated `dist/` or `assets/papers.js`; the build script owns them.
+- Use figures sparingly: normally one method overview and at most one decisive result. Store them under `content/media/<slug>/`, prefer WebP, keep each file under 2 MiB, require descriptive alt text, and caption the figure number, source, and license.
 
 ## User-facing intake
 

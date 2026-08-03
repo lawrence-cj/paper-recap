@@ -1,6 +1,6 @@
 # Paper Recap
 
-一个为“快速回忆”设计的个人论文阅读库。每篇记录是 `content/papers/` 中的独立 Markdown 文件；推送到 `main` 后，GitHub Actions 会自动校验并发布到 GitHub Pages。
+一个为“快速回忆”设计的个人论文阅读库。每篇记录是 `content/papers/` 中的独立 Markdown 文件，可选图片保存在 `content/media/<paper-slug>/`；推送到 `main` 后，GitHub Actions 会自动校验并发布到 GitHub Pages。
 
 ## 以后最简流程
 

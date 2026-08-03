@@ -15,7 +15,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTENT_DIR = ROOT / "content" / "papers"
+MEDIA_DIR = ROOT / "content" / "media"
 DIST_DIR = ROOT / "dist"
+MAX_MEDIA_BYTES = 2 * 1024 * 1024
+IMAGE_PATTERN = re.compile(
+    r'^!\[([^\]\n]+)\]\((media/[^\s)"\']+\.(?:png|jpe?g|webp))(?:\s+"([^"\n]+)")?\)\s*$',
+    re.IGNORECASE | re.MULTILINE,
+)
 REQUIRED_FIELDS = {
     "title", "paper_url", "authors", "venue", "published", "read_date",
     "status", "rating", "tags", "one_liner",
@@ -28,6 +34,38 @@ REQUIRED_SECTIONS = (
 
 class ContentError(ValueError):
     pass
+
+
+def validate_images(body: str, slug: str) -> None:
+    matches = list(IMAGE_PATTERN.finditer(body))
+    if body.count("![") != len(matches):
+        raise ContentError(
+            "图片语法无效；请使用 ![替代文本](media/<slug>/image.webp \"图注与来源\")"
+        )
+
+    media_root = MEDIA_DIR.resolve()
+    expected_prefix = f"media/{slug}/"
+    for match in matches:
+        alt_text, relative_path, caption = match.groups()
+        if not alt_text.strip():
+            raise ContentError("图片必须包含非空替代文本")
+        if not caption or not caption.strip():
+            raise ContentError(f"图片 {relative_path} 必须包含图注与来源")
+        if not relative_path.startswith(expected_prefix):
+            raise ContentError(
+                f"图片 {relative_path} 必须放在 content/media/{slug}/ 并使用 media/{slug}/... 引用"
+            )
+
+        media_path = (ROOT / "content" / relative_path).resolve()
+        try:
+            media_path.relative_to(media_root)
+        except ValueError as exc:
+            raise ContentError(f"图片路径越界：{relative_path}") from exc
+        if not media_path.is_file():
+            raise ContentError(f"图片不存在：content/{relative_path}")
+        if media_path.stat().st_size > MAX_MEDIA_BYTES:
+            size_mb = media_path.stat().st_size / (1024 * 1024)
+            raise ContentError(f"图片超过 2 MiB：{relative_path} ({size_mb:.2f} MiB)")
 
 
 def parse_scalar(raw: str):
@@ -77,6 +115,7 @@ def parse_note(path: Path) -> dict:
     if not str(metadata["title"]).strip() or not str(metadata["one_liner"]).strip():
         raise ContentError("title 和 one_liner 不能为空")
 
+    slug = re.sub(r"^\d{4}-\d{2}-\d{2}-", "", path.stem)
     body = match.group(2).strip()
     if body.count("$$") % 2:
         raise ContentError("独立公式的 $$ 分隔符没有成对闭合")
@@ -86,8 +125,9 @@ def parse_note(path: Path) -> dict:
     missing_sections = [section for section in REQUIRED_SECTIONS if section not in headings]
     if missing_sections:
         raise ContentError(f"缺少章节：{', '.join(missing_sections)}")
+    validate_images(body, slug)
 
-    metadata["slug"] = re.sub(r"^\d{4}-\d{2}-\d{2}-", "", path.stem)
+    metadata["slug"] = slug
     metadata["body"] = body
     metadata["source_file"] = path.name
     return metadata
@@ -128,6 +168,8 @@ def build(papers: list[dict]) -> None:
         shutil.copy2(ROOT / filename, DIST_DIR / filename)
     for filename in ("styles.css", "app.js"):
         shutil.copy2(ROOT / "assets" / filename, DIST_DIR / "assets" / filename)
+    if MEDIA_DIR.exists():
+        shutil.copytree(MEDIA_DIR, DIST_DIR / "media")
     write_data(DIST_DIR / "assets" / "papers.js", papers)
 
 

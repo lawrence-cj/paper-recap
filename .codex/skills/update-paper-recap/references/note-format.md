@@ -53,3 +53,18 @@ $$
 - Define symbols in nearby prose and state why the equation matters.
 - Prefer standard KaTeX-supported commands. If a paper uses custom macros, expand them into standard LaTeX.
 - Do not place math delimiters inside backticks; code spans intentionally skip formula rendering.
+
+## Figures
+
+Add figures only when they materially shorten future recall. Prefer one method overview and, when decisive, one qualitative or quantitative result; do not mirror the whole paper.
+
+- Treat the site as public: verify that reuse is permitted, and include the paper figure number, source, and license in the caption. If permission is unclear, link to the source instead of copying the image.
+- Store media under `content/media/<paper-slug>/` using stable lowercase kebab-case names. Prefer WebP for rendered figures and PNG only when it preserves diagrams or text better. Each file must be no larger than 2 MiB.
+- Use standard Markdown with a required alt text and quoted caption:
+
+```markdown
+![VideoCoCo method overview](media/videococo/method-overview.webp "论文 Figure 2：双引擎方法总览。来源：VideoCoCo，CC BY 4.0。")
+```
+
+- Keep equations as editable LaTeX and tables as Markdown whenever practical; never replace them with screenshots.
+- Crop to the meaningful figure and its original panel labels. Do not include unrelated page headers, body text, footers, or page numbers.

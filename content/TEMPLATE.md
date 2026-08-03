@@ -20,6 +20,12 @@ one_liner: "如果半年后只能记住一句话，就是这一句。"
 - 方法的关键机制
 - 与已有方法最本质的区别
 
+可选：插入一至三张真正帮助回忆的关键图。图片存放在 `content/media/<paper-slug>/`，正文使用相对于 `content/` 的路径，并在标题中注明图号、来源和许可：
+
+```markdown
+![方法总览](media/example-paper/method-overview.webp "论文 Figure 2：方法总览。来源：作者论文，CC BY 4.0。")
+```
+
 行内公式使用 `$x_t = f(x_{t-1})$`。独立公式使用：
 
 $$

@@ -131,6 +131,17 @@ dialog::backdrop { background: rgba(20, 19, 17, 0.65); backdrop-filter: blur(5px
 .detail-body .math-block { max-width: 100%; margin: 26px 0; padding: 15px 0; overflow-x: auto; overflow-y: hidden; text-align: center; }
 .detail-body .katex-display { margin: 0; overflow-x: auto; overflow-y: hidden; }
 .detail-body .katex { font-size: 1.08em; }
+.paper-figure { margin: 30px 0; }
+.paper-image-button { display: block; width: 100%; padding: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 6px; background: var(--paper-deep); cursor: zoom-in; }
+.paper-image-button img { display: block; width: 100%; height: auto; max-height: 620px; object-fit: contain; transition: transform 180ms ease; }
+.paper-image-button:hover img { transform: scale(1.012); }
+.paper-figure figcaption { margin-top: 10px; color: var(--muted); font-size: 0.78rem; line-height: 1.55; text-align: center; }
+.image-dialog { width: min(1280px, calc(100% - 28px)); max-height: calc(100vh - 28px); padding: 0; overflow: visible; background: #111; }
+.image-dialog::backdrop { background: rgba(10, 10, 10, 0.88); backdrop-filter: blur(6px); }
+.image-dialog figure { max-height: calc(100vh - 28px); margin: 0; overflow: auto; }
+.image-dialog img { display: block; width: 100%; height: auto; max-height: calc(100vh - 90px); object-fit: contain; }
+.image-dialog figcaption { padding: 14px 54px 16px 20px; color: #f4f1e8; font-size: 0.78rem; line-height: 1.5; }
+.image-dialog-close { z-index: 1; top: 14px; right: 14px; color: #f4f1e8; border-color: rgba(255,255,255,0.42); background: rgba(0,0,0,0.48); }
 .math-error { padding: 14px; overflow-x: auto; border: 1px solid var(--accent); color: var(--accent); background: var(--paper-deep); }
 .paper-link { display: inline-flex; margin-top: 40px; padding: 10px 16px; border: 1px solid var(--ink); border-radius: 99px; text-decoration: none; font-size: 0.8rem; }
 .paper-link:hover { color: var(--paper); background: var(--ink); }
