@@ -19,6 +19,9 @@ one_liner: "先用 Agent 编写并执行 Blender 程序，将物理过程落实�
 
 - **Executable Simulation Engine**：代码 Agent 根据 prompt $p$ 生成自包含的 Blender Python 程序 $c=A_{\mathrm{code}}(p)$，显式规定对象、物理属性和时间演化；沙箱执行得到白色黏土风格的低保真草稿视频 $d=\mathcal{B}(c)$。
 - **Generative Video Engine**：instruction Agent 同时读取原 prompt 与草稿，生成只描述主体、材质、光照和镜头的编辑指令 $e=A_{\mathrm{edit}}(p,d)$；视频编辑器输出 $\hat v=G_\theta(d,e)$。草稿决定“发生什么以及何时发生”，指令决定“最终看起来怎样”。
+
+![VideoCoCo 双引擎方法总览](media/videococo/method-overview.webp "论文 Figure 2：代码 Agent 与 Blender 先生成低保真时空草稿，视频编辑模型再完成写实化。来源：VideoCoCo，CC BY 4.0。")
+
 - **VideoCoCo-3K**：对每个 prompt 生成 Blender 草稿 $d_i$ 和编辑指令 $e_i$，再调用 Seedance 2.0 teacher 产生写实目标 $y_i=G_T(d_i,e_i)$，得到 3,000 个合成三元组：
 
 $$
@@ -55,6 +58,8 @@ $$
 - 在 VBench-2.0 的物理维度上，平均分从 **52.18% 提升到 77.88%**；力学达到 92.31%，热学达到 72.92%，材料为 68.42%。
 - 不微调编辑器、只加入可执行草稿时，PhyGenBench 已从 0.475 提升到 0.506，说明收益不完全来自额外训练。
 - LoRA 微调达到 0.558，优于全参数微调的 0.535。任务只需学习“保留白模运动并写实化”的窄技能，LoRA 更能保留基础模型已有的视觉先验。
+
+![VideoCoCo 与 OmniWeaving 的定性对比](media/videococo/qualitative-comparison.webp "论文 Figure 3：在升华、真空压缩、碰撞破碎和浮力过程上的草稿、OmniWeaving baseline 与 VideoCoCo 对比。来源：VideoCoCo，CC BY 4.0。")
 
 ## 我的提问
 
