@@ -123,7 +123,11 @@ kbd { padding: 0 6px; border: 1px solid var(--line); border-radius: 4px; color: 
 .empty-state p { margin: 0 0 18px; color: var(--muted); }
 .empty-state button { padding: 8px 15px; border: 1px solid var(--ink); border-radius: 99px; color: var(--paper); background: var(--ink); }
 
-footer { width: min(1180px, calc(100% - 40px)); margin: 0 auto; padding: 28px 0 40px; display: flex; justify-content: space-between; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.74rem; }
+footer { width: min(1180px, calc(100% - 40px)); margin: 0 auto; padding: 28px 0 40px; display: flex; gap: 18px; flex-wrap: wrap; justify-content: space-between; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.74rem; }
+.footer-meta { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+.visit-counter { display: inline-flex; opacity: 0.82; transition: opacity 150ms ease; }
+.visit-counter:hover { opacity: 1; }
+.visit-counter img { display: block; height: 20px; }
 
 dialog { width: min(820px, calc(100% - 32px)); max-height: calc(100vh - 32px); padding: 0; overflow-y: auto; overscroll-behavior: contain; border: 0; border-radius: 2px; color: var(--ink); background: var(--paper); box-shadow: var(--shadow); }
 dialog::backdrop { background: rgba(20, 19, 17, 0.65); backdrop-filter: blur(5px); }
