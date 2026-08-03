@@ -14,7 +14,7 @@ Turn raw reading notes and Agent conversations into compact, durable recap entri
 3. Inspect `git status --short --branch`. Never mix unrelated changes into the recap commit. When clean, update from `origin/main` with `git pull --ff-only` before editing.
 4. Identify the paper from the supplied title, URL, PDF, or context. Browse authoritative sources only when identity, authors, venue, year, or claims require verification. Never invent missing bibliographic facts.
 5. Read `references/note-format.md` before creating or substantially restructuring an entry.
-6. Search `content/papers/` by title, URL, and slug. Update the existing record instead of creating a duplicate.
+6. Deduplicate before choosing a filename. Search every note in `content/papers/` by normalized title, paper URL, DOI, arXiv ID, and slug. Treat a matching DOI/arXiv ID, or a matching canonical title and authors, as the same paper even when its filename or reading date differs. If a match exists, edit that file in place and merge the new summary, Q&A, formulas, judgments, and figures into it; never create a second note for the same paper. If several candidates remain, inspect and verify them before writing, and ask the user only when the identity is still genuinely ambiguous.
 7. Create or edit exactly one Markdown note in `content/papers/`. Name new files `YYYY-MM-DD-short-kebab-slug.md`, using the read date and a stable English slug. When figures materially improve recall, add only that note's media under `content/media/<slug>/`.
 8. Preserve the user's own judgment and disagreements. Condense Agent answers, remove conversational filler, and mark unknowable gaps as `待补充`; do not silently turn inference into fact.
 9. Preserve important equations in LaTeX. Use `$...$` for inline math and `$$...$$` for display math; never replace formulas with vague prose or screenshots.
@@ -31,6 +31,7 @@ Turn raw reading notes and Agent conversations into compact, durable recap entri
 - Include concrete result numbers only when supplied or verified.
 - Keep every formula needed to understand the method or result. Define symbols immediately around the equation and check delimiter balance.
 - Put distilled Q&A under `我的提问`; keep only questions that changed understanding or future action.
+- When merging an existing paper, remove redundant points while preserving all non-duplicate insights. Keep changed judgments as an explicit evolution rather than silently replacing the earlier conclusion.
 - Make `下次只看这些` one to three items. This is the fastest recap path.
 - Do not edit generated `dist/` or `assets/papers.js`; the build script owns them.
 - Use figures sparingly: normally one method overview and at most one decisive result. Store them under `content/media/<slug>/`, prefer WebP, keep each file under 2 MiB, require descriptive alt text, and caption the figure number, source, and license.
