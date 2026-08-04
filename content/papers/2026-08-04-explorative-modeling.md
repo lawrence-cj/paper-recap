@@ -38,7 +38,7 @@ $$
 - **加入 diffusion/flow**：对同一数据 $x$、condition $c$ 和 timestep $t$，采样 $K$ 个不同噪声 $\epsilon_i$，构造 $K$ 个 $x_t^{(i)}$，计算各自的 velocity/flow-matching loss，只反传最小的一项：
 
 $$
-\ell_i=left\lVert
+\ell_i=\left\lVert
 v_\theta(x_t^{(i)},t,c)-v_{\mathrm{target}}^{(i)}
 \right\rVert_2^2,
 \qquad
