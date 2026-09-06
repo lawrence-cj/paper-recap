@@ -37,8 +37,18 @@
     let listType = null;
     let displayMath = null;
     const closeList = () => { if (listType) output.push(`</${listType}>`); listType = null; };
+    const tableCells = (value) => value.trim()
+      .replace(/^\|/, "")
+      .replace(/\|$/, "")
+      .split("|")
+      .map((cell) => cell.trim());
+    const isTableDivider = (value) => {
+      const cells = tableCells(value);
+      return cells.length > 1 && cells.every((cell) => /^:?-{3,}:?$/.test(cell));
+    };
 
-    for (const raw of lines) {
+    for (let lineIndex = 0; lineIndex < lines.length; lineIndex += 1) {
+      const raw = lines[lineIndex];
       const line = raw.trim();
       if (displayMath !== null) {
         displayMath.push(raw);
@@ -55,6 +65,31 @@
         continue;
       }
       if (!line) { closeList(); continue; }
+      if (line.includes("|") && lineIndex + 1 < lines.length && isTableDivider(lines[lineIndex + 1])) {
+        closeList();
+        const headers = tableCells(line);
+        const dividers = tableCells(lines[lineIndex + 1]);
+        const alignments = dividers.map((cell) => {
+          if (cell.startsWith(":") && cell.endsWith(":")) return "center";
+          if (cell.endsWith(":")) return "right";
+          return "left";
+        });
+        const rows = [];
+        let rowIndex = lineIndex + 2;
+        while (rowIndex < lines.length) {
+          const row = lines[rowIndex].trim();
+          if (!row || !row.includes("|")) break;
+          const cells = tableCells(row);
+          if (cells.length !== headers.length) break;
+          rows.push(cells);
+          rowIndex += 1;
+        }
+        const head = headers.map((cell, index) => `<th class="align-${alignments[index] || "left"}" scope="col">${inlineMarkdown(cell)}</th>`).join("");
+        const body = rows.map((cells) => `<tr>${cells.map((cell, index) => `<td class="align-${alignments[index] || "left"}">${inlineMarkdown(cell)}</td>`).join("")}</tr>`).join("");
+        output.push(`<div class="table-scroll"><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`);
+        lineIndex = rowIndex - 1;
+        continue;
+      }
       const image = line.match(/^!\[([^\]]+)\]\((media\/[^\s)"']+\.(?:png|jpe?g|webp))(?:\s+"([^"]+)")?\)$/i);
       if (image) {
         closeList();
