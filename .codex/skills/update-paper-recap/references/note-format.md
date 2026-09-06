@@ -56,9 +56,9 @@ $$
 
 ## Figures
 
-Add figures only when they materially shorten future recall. Prefer one method overview and, when decisive, one qualitative or quantitative result; do not mirror the whole paper.
+Actively source a good figure for every entry — do not treat this as optional polish. Prefer one method overview and, when decisive, one qualitative or quantitative result; do not mirror the whole paper. This applies whether the source is a PDF, a blog post, a project page, or a repo README: check what diagrams/screenshots exist and pull the one that most helps future recall.
 
-- Treat the site as public: verify that reuse is permitted, and include the paper figure number, source, and license in the caption. If permission is unclear, link to the source instead of copying the image.
+- Treat the site as public: verify that reuse is permitted, and include the paper figure number (or a descriptive name if the source has none), source, and license in the caption. If permission is unclear, link to the source instead of copying the image — but say so explicitly rather than silently omitting the figure.
 - Store media under `content/media/<paper-slug>/` using stable lowercase kebab-case names. Prefer WebP for rendered figures and PNG only when it preserves diagrams or text better. Each file must be no larger than 2 MiB.
 - Use standard Markdown with a required alt text and quoted caption:
 
