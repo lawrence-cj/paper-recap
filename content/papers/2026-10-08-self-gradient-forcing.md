@@ -7,7 +7,8 @@ published: "2026"
 read_date: "2026-10-08"
 read_at: "2026-10-08T20:45:55+08:00"
 status: "已读"
-tags: ["Video Generation", "Autoregressive Generation", "Knowledge Distillation"]
+tags: ["Video Generation", "Autoregressive Generation", "Streaming Video", "Diffusion Models", "Knowledge Distillation"]
+search_terms: ["Video Generation", "Autoregressive Generation", "Knowledge Distillation"]
 one_liner: "先无梯度自回归生成并记录 exit-step 输入，再用干净历史重建可求导的 KV，让未来 DMD 损失训练历史写入；恢复的是记忆编码梯度，不是整条采样轨迹的梯度。"
 ---
 
@@ -178,6 +179,14 @@ Memory 的主要用途是生成各层内部 K/V，不是再输出视频；可解
 用 A → B 表示，SGF 的 B 损失通过 **干净 A 的编码**传回；SRF 则通过 **replay 中重新加噪 A 的表示**传回。SRF 范围外继承的历史仍 detach。SRF 也训练内部历史表示，不能说它完全没有 memory 梯度。
 
 因此区别先在 replay 的输入和梯度路径，再在 SGF+ 新增的角色参数分离。Vidu S2 还有用于超分的 Refiner，不能把它当 SGF+ 的 context writer。SRF 的具体噪声采样、teacher 与 replay 长度公开不全；没有控制实验能说明 SGF 必然优于 SRF。
+
+### Q9：SGF 和 SRF，哪一个更 elegant？
+
+Agent 的阅读偏好是 **原始 SGF 在问题与改动的对应关系上更清楚**：先指出历史 KV 被 detach 导致的监督缺口，再在固定 rollout 输入下重建这一条梯度路径；不新增 loss，也不要求整条采样轨迹反传。保留实际 exit 输入，也便于检查第二遍是否近似恢复原前向。
+
+SRF 的单一 noisy stream 更容易表达和实现：给自生成轨迹重新加噪，以 causal replay 训练。但噪声构造改变了第二遍输入，历史处于带噪条件，解释效果时还需区分跨块梯度与重加噪本身的影响。SGF 的代价则是 clean/noisy 双流及专门 mask，实现更复杂。
+
+如果 elegant 指最少的输入流与 mask，SRF 更占优；如果指针对所缺梯度作明确修改，Agent 更偏向 SGF。这是设计判断，没有由此证明 SGF 的效果优于 SRF。SGF+ 又是另一个取舍：角色分离容易理解，但完整参数翻倍，不宜直接沿用对原始 SGF 的成本判断。
 
 ## 局限与疑问
 

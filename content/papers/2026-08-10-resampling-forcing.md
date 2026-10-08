@@ -7,7 +7,8 @@ published: "2025"
 read_date: "2026-08-10"
 read_at: "2026-08-10T18:29:03+08:00"
 status: "已精读"
-tags: ["Video Diffusion", "Autoregressive Generation", "Exposure Bias", "Long Video"]
+tags: ["Video Generation", "Autoregressive Generation", "Streaming Video", "Diffusion Models", "Training & Optimization"]
+search_terms: ["Video Diffusion", "Autoregressive Generation", "Exposure Bias", "Long Video"]
 one_liner: "Resampling Forcing 先 stop-gradient 地把 GT 历史重采样成带当前模型误差的 $t=0$ context，再以全部 GT chunk 为 target 做一次并行的标准 flow-matching 更新。"
 ---
 

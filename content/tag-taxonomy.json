@@ -1,0 +1,163 @@
+[
+  {
+    "label": "研究方向",
+    "tags": [
+      {
+        "key": "Video Generation",
+        "label": "视频生成",
+        "description": "视频生成模型、训练、推理，以及相关数据与评测。",
+        "aliases": [
+          "video gen",
+          "video synthesis"
+        ]
+      },
+      {
+        "key": "Autoregressive Generation",
+        "label": "自回归 / 因果",
+        "description": "重点研究按时间或 token 顺序生成、因果注意力与训练推理差异。",
+        "aliases": [
+          "causal",
+          "autoregressive",
+          "因果生成"
+        ]
+      },
+      {
+        "key": "Streaming Video",
+        "label": "流式 / 长视频",
+        "description": "持续或长时间视频生成、跨块历史、缓存与长视频服务。",
+        "aliases": [
+          "streaming video gen",
+          "long video",
+          "长视频生成"
+        ]
+      },
+      {
+        "key": "Diffusion Models",
+        "label": "扩散 / Flow",
+        "description": "扩散与 flow 模型的采样、目标函数和生成方法。",
+        "aliases": [
+          "diffusion",
+          "flow matching",
+          "MeanFlow"
+        ]
+      },
+      {
+        "key": "Language Models",
+        "label": "语言模型",
+        "description": "语言模型的训练目标、表示、解码与推理。",
+        "aliases": [
+          "LLM",
+          "language model"
+        ]
+      },
+      {
+        "key": "World Models",
+        "label": "世界模型",
+        "description": "状态预测、交互模拟与世界建模；单纯生成长视频不自动归入此类。",
+        "aliases": [
+          "world model"
+        ]
+      },
+      {
+        "key": "Agentic Systems",
+        "label": "Agent 系统",
+        "description": "由 Agent 执行规划、工具调用与系统优化。",
+        "aliases": [
+          "agent",
+          "agentic"
+        ]
+      },
+      {
+        "key": "Evaluation",
+        "label": "评测 / 奖励",
+        "description": "生成质量、物理合理性、偏好与奖励模型。",
+        "aliases": [
+          "evaluation",
+          "reward",
+          "benchmark"
+        ]
+      },
+      {
+        "key": "Research Workflow",
+        "label": "阅读整理",
+        "description": "论文阅读、知识回顾与笔记维护。",
+        "aliases": [
+          "workflow",
+          "knowledge management"
+        ]
+      }
+    ]
+  },
+  {
+    "label": "方法与工程",
+    "tags": [
+      {
+        "key": "Knowledge Distillation",
+        "label": "蒸馏 / 少步",
+        "description": "教师蒸馏、分布匹配，以及少步生成与训练。",
+        "aliases": [
+          "distillation",
+          "few-step",
+          "少步采样"
+        ]
+      },
+      {
+        "key": "Efficient Attention",
+        "label": "高效 Attention",
+        "description": "稀疏、线性、混合 attention 与注意力计算优化。",
+        "aliases": [
+          "sparse attention",
+          "linear attention",
+          "hybrid attention"
+        ]
+      },
+      {
+        "key": "Inference Acceleration",
+        "label": "推理加速",
+        "description": "缓存、推测解码、搜索和其他减少推理开销的方法。",
+        "aliases": [
+          "efficient inference",
+          "acceleration"
+        ]
+      },
+      {
+        "key": "Training & Optimization",
+        "label": "训练 / 优化",
+        "description": "训练目标、优化稳定性、参数适配和规模规律。",
+        "aliases": [
+          "optimization",
+          "训练优化"
+        ]
+      },
+      {
+        "key": "Data Curation",
+        "label": "数据 / 选数",
+        "description": "数据生产、过滤、归因与样本难度分析。",
+        "aliases": [
+          "data selection",
+          "数据筛选"
+        ]
+      },
+      {
+        "key": "Serving Systems",
+        "label": "部署 / 服务",
+        "description": "GPU 系统、调度、在线服务、扩缩容和长上下文系统。",
+        "aliases": [
+          "serving",
+          "deployment",
+          "systems"
+        ]
+      },
+      {
+        "key": "Video Editing",
+        "label": "视频编辑 / 控制",
+        "description": "视频编辑、条件控制，以及面向生成的语义或物理规划。",
+        "aliases": [
+          "editing",
+          "video control",
+          "视频控制"
+        ]
+      }
+    ]
+  }
+]

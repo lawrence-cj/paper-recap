@@ -7,7 +7,8 @@ published: "2026"
 read_date: "2026-10-08"
 read_at: "2026-10-08T20:51:07+08:00"
 status: "已读"
-tags: ["Video Generation", "Autoregressive Generation", "Knowledge Distillation"]
+tags: ["Video Generation", "Autoregressive Generation", "Streaming Video", "Diffusion Models", "Knowledge Distillation"]
+search_terms: ["Video Generation", "Autoregressive Generation", "Knowledge Distillation"]
 one_liner: "在 SGF 可求导历史重建上，把 t=0 的 context writer 与带噪去噪器分成两套参数，减少角色梯度冲突；完整版本生成器约从 1.4B 翻至 2.8B，推理调用次数不翻倍。"
 ---
 
@@ -37,7 +38,7 @@ $$
 
 $g_C$ 来自 context writing，$g_D$ 来自 denoising；它们不是两项不同 loss，而是同一 DMD 目标经过两种角色的梯度。若内积为负，合并到同一权重时会部分抵消。
 
-作者在所测 128 prompts × 4 timesteps 中，Attention 和 FFN 各 512 对角色梯度的余弦相似度均为负。聚合平均方向夹角为 104.2°、106.3°。这是特定模型与测量的观察，不是所有视频模型必然如此的定理。
+作者在所测 128 prompts × 4 timesteps 中，Attention 和 FFN 各 512 对角色梯度的余弦相似度均为负。平均方向的可视化报告夹角为 104.2°、106.3°。逐对余弦使用完整的所选权重梯度；t-SNE 与平均方向图使用坐标抽样表示，二者的测量口径不同。实验细节见 Q7。这是特定模型与测量的观察，不是所有视频模型必然如此的定理。
 
 ### 2. 两套参数，前向仍通过 KV 合作
 
@@ -164,6 +165,30 @@ SRF 的 replay 内历史表示也是可求导的，后续损失能通过带噪�
 
 Vidu 的 Backbone/超分 Refiner 与 SGF+ 的 Writer/Denoiser 不同：前者分工是低分辨率生成与高分辨率细节恢复，后者分工是历史编码与当前去噪。不能因为 Vidu 有两个模块，就认定已经采用 SGF+ 的角色分离。
 
+### Q7：梯度冲突是怎样设计实验、从共享权重里测出来的？
+
+**固定原始 SGF 共享模型，只测梯度，不更新权重。** 官方诊断用 SGF generator checkpoint、配套 fake-score critic 和冻结 Wan2.1-T2V-14B teacher；128 个 prompts 各覆盖四个去噪 exit，共 512 个 prompt–exit 配对。不是先训练两个独立模型，再比较它们的梯度。第一遍无梯度 rollout 后，在第二遍重建的同一个 DMD loss 上做 backward。[实验配置与采集说明](https://github.com/Zihan-Su/Self_Gradient_Forcing_Plus/blob/14cda9bb35f87000fbc11138a5170002d213effe/gradient_conflict/README.md)
+
+对共享 linear 的 $Y=HW^\top$，保存输入 $H$，并在输出处获取反向信号 $\Delta=\partial\mathcal L/\partial Y$。把 batch 与 token 维展开，再按 clean/context 与 noisy/denoising 两组 tokens 分开：
+
+$$
+g_C=\Delta_C^\top H_C,\qquad
+g_D=\Delta_D^\top H_D,\qquad
+\frac{\partial\mathcal L}{\partial W}=g_C+g_D.
+$$
+
+这拆的是同一 loss 对同一权重的两类使用位置的贡献。$\Delta_C$ 已包含后续预测经 attention 回传的信号，所以 clean stream 无需另设 loss。代码用 forward/output hooks 做拆分，FP32 计算完整矩阵的内积与范数，再校验两项相加与 autograd 的实际权重梯度近似一致。[`collect.py` 的拆分与校验](https://github.com/Zihan-Su/Self_Gradient_Forcing_Plus/blob/14cda9bb35f87000fbc11138a5170002d213effe/gradient_conflict/collect.py#L114)
+
+**测量范围与统计单位需要分清：**
+
+- 所有 30 层 self-attention 的 Q/K/V/O 权重，共 120 个矩阵；FFN 的 up/down 权重，共 60 个矩阵。不包括 bias，也不是遍历全模型所有参数。
+- 对每个 prompt–exit，将同一模块族的各层权重梯度看作一个拼接向量，分别计算 Attention、FFN 的 $\operatorname{cos}(g_C,g_D)$。两个族各有 512 个值，全部为负；不能扩写成“每个层、每个参数都冲突”。[`analyze.py` 的聚合统计](https://github.com/Zihan-Su/Self_Gradient_Forcing_Plus/blob/14cda9bb35f87000fbc11138a5170002d213effe/gradient_conflict/analyze.py)
+- t-SNE 展示两类梯度分布差异，负余弦才是直接的方向冲突证据。最后一层 FFN 的 context 梯度全为零，余弦与角距离没有定义；Appendix E 因此不画它的 t-SNE。
+
+**另一个实验在 TF 初始化、SGF 训练前测。** Appendix C 使用 128 段真实视频 × 50 个随机去噪时间，context 固定为 0，共 6,400 对／模块族。平均方向角为 Attention 95.1°、FFN 105.1°，绝大多数配对余弦为负。它说明角色差异在这个初始化上已经存在；不能和主实验的 prompt rollout、512 对混为一组。[Appendix C](https://arxiv.org/html/2610.10429v1#A3)
+
+对我们更有用的是这套诊断：先在目标模型上按角色拆梯度，检查和是否还原、负余弦比例、两种梯度的相对大小和逐层分布，再决定分哪些参数。负内积说明共享更新有抵消项，但不单独证明实际 AdamW 更新会让 loss 上升，也不保证增参后效果一定更好；仍需训练消融与相同参数预算对照。
+
 ## 局限与疑问
 
 - **更多参数的贡献待分离**：角色梯度分析支持设计动机，但希望有同参数预算的共享模型对照，量化角色分离和容量增加各自的贡献。
@@ -178,8 +203,10 @@ Vidu 的 Backbone/超分 Refiner 与 SGF+ 的 Writer/Denoiser 不同：前者分
 
 Agent 的判断：先验证 SGF 的历史梯度路径，再测角色梯度冲突，最后决定是否上完整分离。小规模实验可比较冻结历史、共享参数 SGF、角色 LoRA 和完整 SGF+，固定初始化、教师与推理预算，同时记录质量、动作与成本。LoRA 和把角色分离迁移到 SRF 都是可研究方案，不是本文已验证结论。
 
+关于方法是否 elegant：Agent 更欣赏原始 SGF 明确选择 detach 边界、恢复所缺历史梯度的设计。SGF+ 的参数分离直观，但生成器基本翻倍，简洁程度要结合参数预算判断；“优雅”是阅读偏好，不能替代质量与成本对照。详见 [SGF 的 Q9](https://junsongc.top/paper-recap/#paper=self-gradient-forcing)。
+
 ## 下次只看这些
 
-1. **新增设计**：SGF 恢复 clean KV 的梯度，SGF+ 再把写历史和当前去噪的参数分开；不是只有 K/V 多一个 linear。
+1. **新增设计与证据**：SGF 恢复 clean KV 的梯度，SGF+ 再分写历史／去噪参数；Q7 用同一 loss 的 token 角色拆梯度，主实验为模块族各 512 个负余弦，不是每层都负。
 2. **两遍与成本**：两遍都用 Memory，第一次无梯度帮助生成，第二次有梯度接受未来 DMD；完整生成器约 1.4B → 2.8B，调用次数与计算量不随之翻倍。
 3. **与 SRF 对照**：SRF 重加噪并训练带噪历史表示，SGF 重放 exit 并重建干净历史；SGF+ 在此基础上再分角色参数。长演示与长期剧情能力分开判断。

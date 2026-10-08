@@ -7,7 +7,8 @@ published: "2026"
 read_date: "2026-08-12"
 read_at: "2026-08-12T14:46:25+08:00"
 status: "已读"
-tags: ["Video Generation", "LoRA", "Data Curation", "Fine-Tuning"]
+tags: ["Video Generation", "Data Curation", "Training & Optimization"]
+search_terms: ["Video Generation", "LoRA", "Data Curation", "Fine-Tuning"]
 one_liner: "这是一个用 176 条高分辨率真人短视频把 MiniMax H3 推向自然皮肤、表情和纪录片式运动的 LoRA；当前权重为 rank 32、1500 steps，按有效 batch 1 推算约 8.5 epochs，但原始数据与完整训练配置未公开。"
 ---
 

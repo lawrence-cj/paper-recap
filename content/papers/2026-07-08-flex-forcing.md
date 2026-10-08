@@ -6,7 +6,8 @@ venue: "ICML 2026"
 published: "2026"
 read_date: "2026-07-08"
 status: "已精读"
-tags: ["Video Diffusion", "Autoregressive Generation", "Bidirectional Attention", "Long Video"]
+tags: ["Video Generation", "Autoregressive Generation", "Streaming Video", "Diffusion Models"]
+search_terms: ["Video Diffusion", "Autoregressive Generation", "Bidirectional Attention", "Long Video"]
 one_liner: "Flex-Forcing 让同一视频 diffusion 权重在任意 chunk 内双向、chunk 间因果，从而把生成质量、流式延迟和长视频记忆变成可调粒度。"
 ---
 

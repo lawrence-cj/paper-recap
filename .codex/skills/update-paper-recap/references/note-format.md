@@ -14,7 +14,8 @@ Required fields:
 - `read_date`: local date in `YYYY-MM-DD`.
 - `read_at`: local reading time in timezone-aware ISO 8601 format, such as `2026-08-03T22:35:13+08:00`. Require it for every new note so papers from the same day sort in true reading order. Legacy notes may omit it.
 - `status`: normally `待读`, `略读`, `已读`, `已精读`, or `复现中`.
-- `tags`: inline quoted list with two to five stable tags.
+- `tags`: inline quoted list with two to five stable tags. Use canonical `key` values from `content/tag-taxonomy.json`; the site groups and labels these for browsing. Prefer an existing broad category over creating a paper-specific tag. `Streaming Video` covers streaming / long-video generation, while `Autoregressive Generation` covers causal / autoregressive methods; they are distinct and may both apply.
+- Optional `search_terms`: inline quoted list of more specific concepts or former tags, for full-text search without expanding the browsing taxonomy. Do not put paper-specific terms into `tags` just to make them searchable.
 - `one_liner`: one standalone sentence that restores the paper's core memory.
 
 Keep all string values quoted. Keep the frontmatter parser-compatible: one `key: value` per line and no multiline values.

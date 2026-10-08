@@ -7,7 +7,8 @@ published: "2026"
 read_date: "2026-08-10"
 read_at: "2026-08-10T22:06:45+08:00"
 status: "已精读"
-tags: ["Language Models", "Loss Functions", "Proper Scoring Rules", "Optimization"]
+tags: ["Language Models", "Training & Optimization"]
+search_terms: ["Language Models", "Loss Functions", "Proper Scoring Rules", "Optimization"]
 one_liner: "LM Loss 必须能从单个 Token 样本无偏估计完整目标分布；所有合格选择可由凹的广义熵构造，但只有配套激活函数后才能判断优化优劣，Softmax 与交叉熵正是梯度最干净的天然配对。"
 ---
 

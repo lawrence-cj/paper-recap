@@ -7,7 +7,8 @@ published: "2026"
 read_date: "2026-09-18"
 read_at: "2026-09-18T16:32:12+08:00"
 status: "已读"
-tags: ["Agentic Systems", "Efficient Inference", "GPU Systems", "Video Generation"]
+tags: ["Video Generation", "Agentic Systems", "Inference Acceleration", "Serving Systems"]
+search_terms: ["Agentic Systems", "Efficient Inference", "GPU Systems", "Video Generation"]
 one_liner: "人设定目标并搭建可验证的反馈环境，GLM agent 自主查错和优化推理系统；文章尚未证明 agent 能改进自身 harness 并提高后续优化能力。"
 ---
 

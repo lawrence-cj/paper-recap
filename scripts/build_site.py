@@ -16,6 +16,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 CONTENT_DIR = ROOT / "content" / "papers"
 MEDIA_DIR = ROOT / "content" / "media"
+TAG_TAXONOMY = ROOT / "content" / "tag-taxonomy.json"
 DIST_DIR = ROOT / "dist"
 MAX_MEDIA_BYTES = 2 * 1024 * 1024
 IMAGE_PATTERN = re.compile(
@@ -34,6 +35,34 @@ REQUIRED_SECTIONS = (
 
 class ContentError(ValueError):
     pass
+
+
+def load_tag_groups() -> list[dict]:
+    try:
+        groups = json.loads(TAG_TAXONOMY.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise ContentError(f"无法读取标签分类：{exc}") from exc
+    if not isinstance(groups, list) or not groups:
+        raise ContentError("标签分类必须是非空分组列表")
+    seen = set()
+    for group in groups:
+        if not isinstance(group, dict) or not isinstance(group.get("label"), str) or not group["label"].strip():
+            raise ContentError("标签分组必须包含名称")
+        if not isinstance(group.get("tags"), list) or not group["tags"]:
+            raise ContentError("标签分组必须包含 tags 列表")
+        for tag in group["tags"]:
+            if not isinstance(tag, dict) or any(
+                not isinstance(tag.get(field), str) or not tag[field].strip()
+                for field in ("key", "label", "description")
+            ):
+                raise ContentError("分类标签必须包含 key、label 与 description")
+            if tag["key"] in seen:
+                raise ContentError(f"分类标签重复：{tag['key']}")
+            seen.add(tag["key"])
+            aliases = tag.get("aliases", [])
+            if not isinstance(aliases, list) or not all(isinstance(alias, str) and alias.strip() for alias in aliases):
+                raise ContentError(f"分类标签 {tag['key']} 的 aliases 必须是文本列表")
+    return groups
 
 
 def validate_images(body: str, slug: str) -> None:
@@ -106,6 +135,11 @@ def parse_note(path: Path) -> dict:
         raise ContentError("tags 必须是至少含一个主题的列表")
     if not all(isinstance(tag, str) and tag.strip() for tag in metadata["tags"]):
         raise ContentError("tags 中的每一项都必须是非空文本")
+    if "search_terms" in metadata and (
+        not isinstance(metadata["search_terms"], list)
+        or not all(isinstance(term, str) and term.strip() for term in metadata["search_terms"])
+    ):
+        raise ContentError("search_terms 必须是非空文本组成的列表")
     try:
         datetime.strptime(str(metadata["read_date"]), "%Y-%m-%d")
     except ValueError as exc:
@@ -141,10 +175,16 @@ def parse_note(path: Path) -> dict:
 
 
 def load_papers() -> list[dict]:
+    known_tags = {tag["key"] for group in load_tag_groups() for tag in group["tags"]}
     papers, errors, seen_slugs = [], [], set()
     for path in sorted(CONTENT_DIR.glob("*.md")):
         try:
             paper = parse_note(path)
+            if not 2 <= len(paper["tags"]) <= 5 or len(set(paper["tags"])) != len(paper["tags"]):
+                raise ContentError("每篇记录需 2–5 个不重复的分类标签")
+            unknown = set(paper["tags"]) - known_tags
+            if unknown:
+                raise ContentError(f"未定义的分类标签：{', '.join(sorted(unknown))}；请使用 content/tag-taxonomy.json 中的 key")
             if paper["slug"] in seen_slugs:
                 raise ContentError(f"slug 重复：{paper['slug']}")
             seen_slugs.add(paper["slug"])
@@ -165,6 +205,7 @@ def load_papers() -> list[dict]:
 def write_data(path: Path, papers: list[dict]) -> None:
     payload = {
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "tag_groups": load_tag_groups(),
         "papers": papers,
     }
     json_text = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))

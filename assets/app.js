@@ -1,6 +1,8 @@
 (() => {
   const data = window.PAPER_RECAP_DATA || { generated_at: "", papers: [] };
-  const state = { query: "", tag: "全部", sort: "newest" };
+  const tagGroups = data.tag_groups || [];
+  const tagDefinitions = new Map(tagGroups.flatMap((group) => group.tags.map((tag) => [tag.key, tag])));
+  const state = { query: "", tags: new Set(), sort: "newest" };
   let lockedScrollY = 0;
   const elements = {
     grid: document.querySelector("#paper-grid"),
@@ -9,6 +11,7 @@
     sort: document.querySelector("#sort-select"),
     count: document.querySelector("#result-count"),
     empty: document.querySelector("#empty-state"),
+    reset: document.querySelector("#reset-filters"),
     dialog: document.querySelector("#paper-dialog"),
     dialogContent: document.querySelector("#dialog-content"),
     imageDialog: document.querySelector("#image-dialog"),
@@ -183,24 +186,51 @@
     return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
   }
 
+  const tagLabel = (key) => tagDefinitions.get(key)?.label || key;
+
+  function readFiltersFromUrl() {
+    const params = new URLSearchParams(location.search);
+    state.query = params.get("q") || "";
+    state.tags = new Set(params.getAll("tag").filter((tag) => tagDefinitions.has(tag)));
+    state.sort = params.get("sort") === "title" ? "title" : "newest";
+    elements.search.value = state.query;
+    elements.sort.value = state.sort;
+  }
+
+  function syncFilterUrl() {
+    const params = new URLSearchParams(location.search);
+    params.delete("tag"); params.delete("q"); params.delete("sort");
+    state.tags.forEach((tag) => params.append("tag", tag));
+    if (state.query) params.set("q", state.query);
+    if (state.sort !== "newest") params.set("sort", state.sort);
+    const query = params.toString();
+    history.replaceState(history.state, "", `${location.pathname}${query ? `?${query}` : ""}${location.hash}`);
+  }
+
+  function filterButton(tag, count) {
+    const active = state.tags.has(tag.key);
+    return `<button class="tag-button ${active ? "active" : ""}" type="button" data-tag="${escapeHtml(tag.key)}" aria-pressed="${active}" title="${escapeHtml(tag.description)}">
+      ${escapeHtml(tag.label)} <span class="tag-count">${count}</span>
+    </button>`;
+  }
+
   function renderTags() {
-    const tags = [["全部", data.papers.length], ...allTags()];
-    elements.tags.innerHTML = tags.map(([tag, count]) => `
-      <button class="tag-button ${state.tag === tag ? "active" : ""}" type="button" data-tag="${escapeHtml(tag)}">
-        ${escapeHtml(tag)} · ${count}
-      </button>`).join("");
-    elements.tags.querySelectorAll("button").forEach((button) => button.addEventListener("click", () => {
-      state.tag = button.dataset.tag;
-      renderTags();
-      renderPapers();
-    }));
+    const counts = new Map(allTags());
+    elements.tags.innerHTML = tagGroups.map((group) => `<div class="tag-group" role="group" aria-label="${escapeHtml(group.label)}">
+      <span class="tag-group-label">${escapeHtml(group.label)}</span>
+      <div class="tag-list">${group.tags.filter((tag) => counts.has(tag.key)).map((tag) => filterButton(tag, counts.get(tag.key))).join("")}</div>
+    </div>`).join("");
   }
 
   function filteredPapers() {
     const needle = state.query.trim().toLocaleLowerCase();
     const filtered = data.papers.filter((paper) => {
-      const tagMatch = state.tag === "全部" || paper.tags.includes(state.tag);
-      const haystack = [paper.title, paper.authors, paper.venue, paper.one_liner, paper.body, ...paper.tags].join(" ").toLocaleLowerCase();
+      const tagMatch = [...state.tags].every((tag) => paper.tags.includes(tag));
+      const tagTerms = paper.tags.flatMap((key) => {
+        const definition = tagDefinitions.get(key);
+        return [key, definition?.label || "", ...(definition?.aliases || [])];
+      });
+      const haystack = [paper.title, paper.authors, paper.venue, paper.one_liner, paper.body, ...(paper.search_terms || []), ...tagTerms].join(" ").toLocaleLowerCase();
       return tagMatch && (!needle || haystack.includes(needle));
     });
     return filtered.sort((a, b) => {
@@ -212,25 +242,49 @@
   }
 
   function paperCard(paper) {
-    const tags = paper.tags.slice(0, 3).map((tag) => `<span>#${escapeHtml(tag)}</span>`).join("");
+    const tags = paper.tags.map((tag) => `<button class="card-tag" type="button" data-tag="${escapeHtml(tag)}" title="筛选：${escapeHtml(tagLabel(tag))}">#${escapeHtml(tagLabel(tag))}</button>`).join("");
     return `<article class="paper-card">
       <button class="card-button" type="button" data-slug="${escapeHtml(paper.slug)}" aria-label="打开《${escapeHtml(paper.title)}》详情">
         <div class="card-top"><span class="status">${escapeHtml(paper.status)}</span><span>${formatDate(paper.read_date)}</span></div>
         <h3>${escapeHtml(paper.title)}</h3>
         <p class="authors">${escapeHtml(paper.authors)}${paper.venue ? ` · ${escapeHtml(paper.venue)}` : ""}</p>
         <p class="one-liner">${escapeHtml(paper.one_liner)}</p>
-        <div class="card-bottom"><div class="card-tags">${tags}</div><span class="arrow" aria-hidden="true">↗</span></div>
       </button>
+      <div class="card-bottom"><div class="card-tags">${tags}</div><button class="arrow" type="button" data-slug="${escapeHtml(paper.slug)}" aria-label="打开《${escapeHtml(paper.title)}》详情">↗</button></div>
     </article>`;
   }
 
   function renderPapers() {
     const papers = filteredPapers();
     elements.grid.innerHTML = papers.map(paperCard).join("");
-    elements.count.textContent = `显示 ${papers.length} / ${data.papers.length} 篇记录`;
+    const selection = [...state.tags].map(tagLabel).join(" + ");
+    elements.count.textContent = `显示 ${papers.length} / ${data.papers.length} 篇记录${selection ? ` · ${selection}` : " · 全部主题"}`;
+    elements.reset.disabled = !state.tags.size && !state.query;
     elements.empty.hidden = papers.length !== 0;
     elements.grid.hidden = papers.length === 0;
-    elements.grid.querySelectorAll("button").forEach((button) => button.addEventListener("click", () => openPaper(button.dataset.slug)));
+  }
+
+  function toggleTag(tag) {
+    if (!tagDefinitions.has(tag)) return;
+    if (state.tags.has(tag)) state.tags.delete(tag);
+    else state.tags.add(tag);
+    renderTags(); renderPapers(); syncFilterUrl();
+    // Rendering replaces the button; keep keyboard focus on the same filter.
+    [...elements.tags.querySelectorAll("[data-tag]")].find((button) => button.dataset.tag === tag)?.focus({ preventScroll: true });
+  }
+
+  function selectSingleTag(tag) {
+    if (!tagDefinitions.has(tag)) return;
+    state.tags = new Set([tag]);
+    state.query = ""; elements.search.value = "";
+    closePaper();
+    renderTags(); renderPapers(); syncFilterUrl();
+    document.querySelector("#library-title").scrollIntoView({ block: "start" });
+  }
+
+  function clearFilters() {
+    state.query = ""; state.tags.clear(); elements.search.value = "";
+    renderTags(); renderPapers(); syncFilterUrl();
   }
 
   function openPaper(slug, updateHash = true) {
@@ -240,6 +294,7 @@
       <p class="detail-kicker">${escapeHtml(paper.status)} · ${formatDate(paper.read_date)}</p>
       <h2 id="dialog-title">${escapeHtml(paper.title)}</h2>
       <div class="detail-meta"><span>${escapeHtml(paper.authors)}</span><span>${escapeHtml(paper.venue)}</span><span>${escapeHtml(paper.published)}</span></div>
+      <div class="detail-tags" aria-label="相关主题">${paper.tags.map((tag) => `<button class="tag-button" type="button" data-tag="${escapeHtml(tag)}">${escapeHtml(tagLabel(tag))} ↗</button>`).join("")}</div>
       <p class="detail-summary">${escapeHtml(paper.one_liner)}</p>
       <div class="detail-body">${renderMarkdown(paper.body)}</div>
       ${paper.paper_url ? `<a class="paper-link" href="${escapeHtml(paper.paper_url)}" target="_blank" rel="noopener">查看原论文 ↗</a>` : ""}`;
@@ -288,11 +343,19 @@
     });
   }
 
-  elements.search.addEventListener("input", (event) => { state.query = event.target.value; renderPapers(); });
-  elements.sort.addEventListener("change", (event) => { state.sort = event.target.value; renderPapers(); });
-  document.querySelector("#clear-filters").addEventListener("click", () => {
-    state.query = ""; state.tag = "全部"; elements.search.value = ""; renderTags(); renderPapers();
+  elements.search.addEventListener("input", (event) => { state.query = event.target.value; renderPapers(); syncFilterUrl(); });
+  elements.sort.addEventListener("change", (event) => { state.sort = event.target.value; renderPapers(); syncFilterUrl(); });
+  elements.tags.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-tag]");
+    if (button) toggleTag(button.dataset.tag);
   });
+  elements.grid.addEventListener("click", (event) => {
+    const button = event.target.closest("button");
+    if (button?.dataset.tag) selectSingleTag(button.dataset.tag);
+    else if (button?.dataset.slug) openPaper(button.dataset.slug);
+  });
+  elements.reset.addEventListener("click", clearFilters);
+  document.querySelector("#clear-filters").addEventListener("click", clearFilters);
   document.querySelector("#dialog-close").addEventListener("click", () => closePaper());
   elements.dialog.addEventListener("click", (event) => { if (event.target === elements.dialog) closePaper(); });
   elements.dialog.addEventListener("close", () => {
@@ -302,6 +365,8 @@
   elements.dialogContent.addEventListener("click", (event) => {
     const button = event.target.closest(".paper-image-button");
     if (button) openImage(button);
+    const tag = event.target.closest("[data-tag]");
+    if (tag) selectSingleTag(tag.dataset.tag);
   });
   document.querySelector("#image-dialog-close").addEventListener("click", () => elements.imageDialog.close());
   elements.imageDialog.addEventListener("close", () => {
@@ -311,7 +376,9 @@
   document.addEventListener("keydown", (event) => {
     if (event.key === "/" && document.activeElement !== elements.search) { event.preventDefault(); elements.search.focus(); }
   });
-  addEventListener("popstate", openFromHash);
+  addEventListener("popstate", () => {
+    readFiltersFromUrl(); renderTags(); renderPapers(); openFromHash();
+  });
 
-  initTheme(); initStats(); renderTags(); renderPapers(); openFromHash();
+  readFiltersFromUrl(); initTheme(); initStats(); renderTags(); renderPapers(); openFromHash();
 })();

@@ -7,7 +7,8 @@ published: "2026"
 read_date: "2026-08-12"
 read_at: "2026-08-12T14:47:08+08:00"
 status: "已精读"
-tags: ["Speculative Decoding", "Autoregressive Generation", "Diffusion Models", "Inference Acceleration"]
+tags: ["Autoregressive Generation", "Diffusion Models", "Inference Acceleration"]
+search_terms: ["Speculative Decoding", "Autoregressive Generation", "Diffusion Models", "Inference Acceleration"]
 one_liner: "CSpD 让小型 continuous visual AR model 起草多个 diffusion-sampled latent tokens，再用共享噪声对齐后的近似路径 likelihood ratio 由大模型并行验证，以有偏但可计算的连续 acceptance rule 换取最高约 2.7× 加速。"
 ---
 

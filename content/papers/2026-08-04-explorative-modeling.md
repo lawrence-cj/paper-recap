@@ -7,7 +7,8 @@ published: "2026"
 read_date: "2026-08-04"
 read_at: "2026-08-04T19:43:43+08:00"
 status: "已精读"
-tags: ["Generative Modeling", "Diffusion Models", "Scaling Laws", "Video Generation"]
+tags: ["Video Generation", "Diffusion Models", "Training & Optimization"]
+search_terms: ["Generative Modeling", "Diffusion Models", "Scaling Laws", "Video Generation"]
 one_liner: "训练时为同一数据探索 K 个 latent/noise，只反传最匹配者，把额外训练算力换成更好的 data–latent coupling；但它只保证 K 个候选中有一个匹配，不保证推理时任意单 noise 都与 prompt 匹配。"
 ---
 

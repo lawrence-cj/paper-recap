@@ -47,19 +47,25 @@
           </div>
           <label class="search">
             <span aria-hidden="true">⌕</span>
-            <input id="search-input" type="search" placeholder="搜索标题、作者、观点…" autocomplete="off" />
+            <input id="search-input" type="search" placeholder="搜索标题、作者、标签、观点…" aria-label="搜索阅读记录" autocomplete="off" />
             <kbd>/</kbd>
           </label>
         </div>
 
         <div class="filters">
-          <div class="tag-list" id="tag-list" aria-label="按标签筛选"></div>
-          <label class="sort-control">排序
-            <select id="sort-select">
-              <option value="newest">最近阅读</option>
-              <option value="title">标题 A–Z</option>
-            </select>
-          </label>
+          <div class="filter-toolbar">
+            <p class="filter-help" id="filter-help">按标签找讲解 · 可多选，显示同时符合的记录</p>
+            <div class="filter-actions">
+              <button class="reset-filters" id="reset-filters" type="button" disabled>清除筛选</button>
+              <label class="sort-control">排序
+                <select id="sort-select">
+                  <option value="newest">最近阅读</option>
+                  <option value="title">标题 A–Z</option>
+                </select>
+              </label>
+            </div>
+          </div>
+          <div class="tag-groups" id="tag-list" aria-label="按标签筛选" aria-describedby="filter-help"></div>
         </div>
 
         <p class="result-count" id="result-count" aria-live="polite"></p>

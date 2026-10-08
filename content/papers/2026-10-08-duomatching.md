@@ -7,7 +7,8 @@ published: "2026"
 read_date: "2026-10-08"
 read_at: "2026-10-08T16:51:03+08:00"
 status: "已读"
-tags: ["Video Generation", "Diffusion Models", "Few-Step Sampling", "Knowledge Distillation"]
+tags: ["Video Generation", "Autoregressive Generation", "Diffusion Models", "Knowledge Distillation"]
+search_terms: ["Video Generation", "Diffusion Models", "Few-Step Sampling", "Knowledge Distillation"]
 one_liner: "保留整段视频 DMD，再用图像教师给抽样帧加 marginal DMD；LatentBridge 把时间压缩的视频 latent 转成指定单帧的图像 latent，让画质监督尽量不伤运动。"
 ---
 

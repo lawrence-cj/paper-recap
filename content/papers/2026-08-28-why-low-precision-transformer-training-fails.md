@@ -7,7 +7,8 @@ published: "2026"
 read_date: "2026-08-28"
 read_at: "2026-08-28T18:46:04+08:00"
 status: "已精读"
-tags: ["Transformer", "FlashAttention", "Low-Precision Training", "Numerical Stability"]
+tags: ["Efficient Attention", "Training & Optimization"]
+search_terms: ["Transformer", "FlashAttention", "Low-Precision Training", "Numerical Stability"]
 one_liner: "低精度 Attention 的危险不在单次舍入误差大小，而在重复最大值让多个未归一化权重精确等于 1，与同号 Value 形成有偏误差，再沿跨 Token、跨 Step 相似的低秩梯度方向写入参数并正反馈放大。"
 ---
 

@@ -16,7 +16,7 @@ Paper Recap is a dependency-free static site workflow. Each paper is stored as a
 
 - One readable, portable, Git-friendly Markdown file per paper.
 - Full-text search across titles, authors, tags, summaries, and notes.
-- Topic filters plus newest-first and title A–Z sorting.
+- Grouped topic filters with multi-tag intersections and shareable filter URLs, plus newest-first and title A–Z sorting.
 - Precise same-day ordering through timezone-aware `read_at` timestamps.
 - KaTeX rendering for inline `$...$` and display `$$...$$` equations.
 - Responsive figures with captions, lazy loading, and click-to-zoom.
@@ -99,6 +99,10 @@ tags: ["Video Generation", "Diffusion Models"]
 one_liner: "The one sentence that should restore the paper's core idea six months later."
 ---
 ```
+
+Choose 2–5 canonical `key` values from [`content/tag-taxonomy.json`](content/tag-taxonomy.json) for `tags`. The catalog groups research areas and methods / engineering. Video generation, causal / autoregressive generation, and streaming / long video describe different dimensions and can overlap. World-model classification requires state prediction or interactive simulation; a long video alone is insufficient. Keep narrower concepts in the optional `search_terms` list or note body so they remain searchable without expanding the browsing catalog.
+
+Selecting multiple tags shows their intersection. Counts show the total number of notes under each tag. Card and detail tags link to that topic. Search, selected tags, and sorting are stored in the URL for refresh and sharing.
 
 The body must contain these top-level sections in this order:
 

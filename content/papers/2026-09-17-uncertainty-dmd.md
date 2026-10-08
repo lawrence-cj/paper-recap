@@ -7,7 +7,8 @@ published: "2026"
 read_date: "2026-09-17"
 read_at: "2026-09-17T16:16:14+08:00"
 status: "已读"
-tags: ["Video Generation", "Diffusion Models", "Few-Step Sampling", "Knowledge Distillation"]
+tags: ["Video Generation", "Autoregressive Generation", "Diffusion Models", "Knowledge Distillation"]
+search_terms: ["Video Generation", "Diffusion Models", "Few-Step Sampling", "Knowledge Distillation"]
 one_liner: "只扰动首个 chunk 第一次去噪的 timestep，并在历史 latent 写入 KV 前加噪；缓存写入后仍固定，训练和推理都采用这两项操作。"
 ---
 

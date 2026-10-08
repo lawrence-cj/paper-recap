@@ -7,7 +7,8 @@ published: "2026"
 read_date: "2026-08-10"
 read_at: "2026-08-10T17:48:44+08:00"
 status: "已精读"
-tags: ["Video Diffusion", "Autoregressive Generation", "Few-Step Sampling", "Exposure Bias", "Acceleration"]
+tags: ["Video Generation", "Autoregressive Generation", "Streaming Video", "Diffusion Models", "Inference Acceleration"]
+search_terms: ["Video Diffusion", "Autoregressive Generation", "Few-Step Sampling", "Exposure Bias", "Acceleration"]
 one_liner: "ICF 让相邻历史 chunk 更 noisy、远处历史逐级更 clean，在 4-step self-rollout 中抑制 clean-context copy shortcut，并把同一 staircase schedule 转为跨 chunk 并行去噪。"
 ---
 

@@ -7,7 +7,8 @@ published: "2026"
 read_date: "2026-08-26"
 read_at: "2026-08-26T17:43:50+08:00"
 status: "已精读"
-tags: ["Diffusion Models", "MeanFlow", "Domain Adaptation", "Few-Step Sampling"]
+tags: ["Diffusion Models", "Knowledge Distillation", "Training & Optimization"]
+search_terms: ["Diffusion Models", "MeanFlow", "Domain Adaptation", "Few-Step Sampling"]
 one_liner: "MF-T 把预测 x/ε/v/u 的异构 ImageNet 模型统一改造成目标域少步 MeanFlow，CAMF 再以真实和预测区间端点间的势能平均变化做对抗后训练，在不增加推理 NFE 的前提下补回大步回归丢失的细节。"
 ---
 

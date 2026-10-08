@@ -7,7 +7,8 @@ published: "2026"
 read_date: "2026-08-10"
 read_at: "2026-08-10T18:17:10+08:00"
 status: "已精读"
-tags: ["Video Generation", "World Models", "KV Cache", "Long Video"]
+tags: ["Video Generation", "Autoregressive Generation", "Streaming Video", "World Models"]
+search_terms: ["Video Generation", "World Models", "KV Cache", "Long Video"]
 one_liner: "WorldTrace 将淘汰历史的 Key 先撤销 temporal RoPE、在 canonical space 压缩，再按固定 slot rank 映射到训练范围内的虚拟位置，使定长 KV cache 仍能读取远期视觉记忆。"
 ---
 
