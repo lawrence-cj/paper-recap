@@ -23,7 +23,33 @@ one_liner: "保留整段视频 DMD，再用图像教师给抽样帧加 marginal 
 
 ## 核心方法
 
-### 1. 整段视频 DMD 与单帧图像 DMD 同时训练
+### 1. Joint 与 marginal 分别表示什么？
+
+Joint 是整段视频所有帧的联合分布。给定提示词 $c$，它描述哪些帧会一起出现，既包含单帧外观，也包含帧之间的关系：
+
+$$
+p(x_1,x_2,\ldots,x_T\mid c).
+$$
+
+$x_i$ 是第 $i$ 帧，$T$ 为帧数。Marginal 是单帧的边缘分布：把其他帧积分掉，只保留这一帧可能是什么样子：
+
+$$
+p(x_i\mid c)
+=\int p(x_1,\ldots,x_T\mid c)\,\mathrm d x_{\setminus i}.
+$$
+
+$x_{\setminus i}$ 表示除第 $i$ 帧以外的所有帧。这里仍保留提示词条件，但不再给定其他帧。论文实际采用按抽帧策略取一帧后的分布，记为 $MQ_\theta$，不局限于固定的帧位置。
+
+两帧视频的例子能说明区别：
+
+| 模型 | 一半视频 | 另一半视频 |
+| --- | --- | --- |
+| A | 红杯 → 红杯 | 蓝杯 → 蓝杯 |
+| B | 红杯 → 蓝杯 | 蓝杯 → 红杯 |
+
+两者每个帧位置都是 50% 红杯、50% 蓝杯，marginal 相同；A 保持颜色，B 改变颜色，joint 不同。因此单帧分布相同不保证时间关系相同。
+
+### 2. 整段视频 DMD 与单帧图像 DMD 同时训练
 
 记 $Q_\theta$ 为学生的视频分布，$P_v$ 为视频教师分布，$P_i$ 为图像教师分布；$M$ 表示按给定策略从视频中取出一帧，$MQ_\theta$ 因而是抽样帧的分布。理想目标写成：
 
@@ -59,7 +85,23 @@ $$
 
 $s_{\mathrm{real}}^{\mathrm{img}}$ 来自图像教师，$s_{\mathrm{fake}}^{\mathrm{img}}$ 来自跟踪学生单帧分布的辅助模型；$w_{\mathrm{img}}(\tau)$ 为时间权重。梯度通过 LatentBridge 传回视频学生。
 
-### 2. LatentBridge：让图像监督作用在单帧表示上
+### 3. Marginal Matching Signal：单帧修正为何不同？
+
+这里的 score 指 $\nabla_{u_\tau}\log p_\tau(u_\tau\mid c)$，描述 latent 沿各方向变化时概率密度如何变化。上式中的 image fake score 与 image teacher score 的差，为学生单帧分布提供修正信号；信号经过 Bridge 传回生成器。
+
+Joint score 则同时考虑其他视频 slice。按论文 §3.1 的分解，对教师或学生的加噪视频密度 $p_\tau$ 都有：
+
+$$
+\nabla_{z_\tau^l}\log p_\tau(\mathbf z_\tau)
+=\nabla_{z_\tau^l}\log p_\tau
+\left(z_\tau^l\mid\mathbf z_\tau^{\setminus l}\right).
+$$
+
+$z_\tau^l$ 是第 $l$ 个加噪视频 slice，$\mathbf z_\tau^{\setminus l}$ 表示其余 slice，提示词条件在上式中省略。给某一帧补上纹理或遗漏的羽毛，可能同时造成它与周围帧的差异；作者据此解释为什么需要更直接的单帧修正，并保留整段目标来约束跨帧关系。
+
+[Figure 2](https://arxiv.org/html/2610.03543v1#S1.F2) 展示两种 score difference 的空间响应。在该例子中，joint 响应较分散，marginal 响应更连贯，尤其集中在人物过于光滑的黑色衣服区域。每张热图独立归一化，因此只能比较空间结构，不能根据颜色亮度判断两个分支的信号强弱，也不能把这个案例当作所有样本的保证。
+
+### 4. LatentBridge：让图像监督作用在单帧表示上
 
 一个时间压缩的视频 latent slice 可能对应多个 RGB 帧；图像教师的 latent 则对应单帧。即使 VAE 编码器兼容，直接把视频 slice 当图像 latent，也可能把运动信息一起压制。不同 VAE 的 latent 空间还可能不兼容。
 
@@ -82,7 +124,7 @@ $x^{l,i}$ 是对应 RGB 帧，$E_{\mathrm{img}}$ 是图像 VAE 编码器。Bridg
 
 直接把视频 latent 解码为 RGB，再经图像 VAE 编码并回传梯度，是另一个可行思路；但在论文训练配置下显存溢出。Bridge 同时解决单帧表示不匹配和这条梯度路径的开销问题。
 
-### 3. LVS：按变化分段，再分配抽帧名额
+### 5. LVS：按变化分段，再分配抽帧名额
 
 Latent Variation Sampling（LVS）计算相邻干净 latent slice 的均方差：
 
@@ -115,6 +157,14 @@ Table 1 应在相同生成方式和 NFE 内比较；下面第一、二行基线�
 - Table 4：直接在压缩的视频 slice 上加 marginal DMD，动态分为 76.94；使用 Bridge 后为 93.61，无单帧监督基线为 94.44。Direct 与 Bridge 的峰值 tensor 显存分别为 59.40、59.41 GB；Decode–Encode 在所测配置下 OOM。
 - Table 5：LVS 的 $K=4$ 总分 83.53，高于均匀随机的 82.61 和等长分段的 82.68；增至 $K=8$ 后，LVS 的动态分与总分都下降。
 - Table 6：权重从 $\omega=0.4$ 提至 0.8，动态分从 93.61 降到 87.78，总分从 83.53 降到 81.57。单帧监督并非越强越好。
+
+### 开源与视频结果（2026-10-08 核对）
+
+- [官方 GitHub](https://github.com/JohnZhan2023/DuoMatching)：已公开训练、推理、LatentBridge 预训练代码和配置，代码采用 Apache-2.0。
+- [模型权重](https://huggingface.co/JohnZhan/DuoMatching/tree/main)：文件列表包含 `model.pt` 和 `latent_bridge/`。README 将发布模型描述为从 Wan2.1-T2V-14B 蒸馏的两步模型；14B 指视频教师，学生沿用 Wan2.1-1.3B 因果模型。这里确认了两步权重，未据此认定论文中所有设置的检查点都已发布。
+- [项目页视频对比](https://johnzhan2023.github.io/DuoMatching/#comparison)：有与 Causal Forcing++、One-Forcing、Reward Forcing、CausVid 的四组可播放对照，每组 10 对。已核对一个样例的 [DuoMatching 视频](https://johnzhan2023.github.io/DuoMatching/videos/causal-forcing/causal-forcing-051-ours.mp4)与 [CF++ 视频](https://johnzhan2023.github.io/DuoMatching/videos/causal-forcing/causal-forcing-051-baseline.mp4)，两条资源均可访问。
+
+这些是作者发布的结果与代码；本次未运行训练或推理复现。视频转载许可未明确，因此只链接官方展示。
 
 ## 我的提问
 
@@ -183,6 +233,47 @@ Agent 的建议：先按失败类型定位监督缺口，让适合的教师负�
 
 若做小规模验证，固定初始化、视频教师、数据和推理预算，依次比较 joint DMD、直接单帧监督、Bridge、LVS，并扫描损失权重和抽帧数。同时看画质、提示词遵循、运动与跨帧一致性，避免只用总分判断收益。额外教师只在训练中使用，也是保留学生推理成本的一种做法。
 
+### Q6：最终 loss 是两项的结合，但 Causal Forcing 不是已经在做 joint DMD 吗？
+
+是。Causal Forcing 最后阶段的 asymmetric DMD 本来就匹配整段视频分布，属于这里说的 joint DMD。DuoMatching §3.2 明确说明 joint 分支沿用 Causal Forcing，新增的是图像教师提供的 marginal DMD；视频学生的最终目标就是上面的两项加权和。Bridge 的 $\ell_1$ loss 用于单独预训练 Bridge。
+
+Joint matching 本身也约束 marginal：若学生完全匹配视频教师的联合分布，单帧分布自然也会匹配该视频教师的单帧分布。额外图像分支提供另一份单帧参考分布，并让单帧修正有独立目标；这也解释了为什么收益既可能来自显式 marginal matching，也可能来自较强图像教师。
+
+“整段视频训练”描述数据与训练过程，不能单凭这点判断采用了 DMD。这里具体指 Causal Forcing 第三阶段的分布匹配；前面的教师训练、ODE/CD 初始化使用各自的损失。
+
+### Q7：与 Causal Forcing++ 的对比是否从同一个 base model 出发？为什么画质差距明显？
+
+主要因果逐帧实验的模型与初始化来源一致，已核实的是以下几项：
+
+| 项目 | Causal Forcing++ | DuoMatching |
+| --- | --- | --- |
+| 视频学生来源 | Wan2.1-1.3B 衍生的因果模型 | 沿用该因果学生 |
+| 少步初始化 | causal CD | 加载 CF++ 公开的 `framewise/causal_cd.pt` |
+| 最后阶段的视频 real score 教师 | Wan2.1-14B | Wan2.1-14B |
+| 独立图像分支 | 无 | Qwen-Image、image fake score 与 Bridge |
+
+依据：[CF++ §4.1](https://arxiv.org/html/2605.15141v4#S4.SS1)、[DuoMatching README](https://github.com/JohnZhan2023/DuoMatching#training)及[公开训练配置](https://github.com/JohnZhan2023/DuoMatching/blob/main/configs/duomatching_train.yaml)。Duo 从第二阶段的 CD 初始化开始进行最终训练，不是把完成第三阶段的 CF++ 成品检查点再续训。
+
+同一起点不意味着监督资源相同。Duo 多了 Qwen-Image 的能力，因此不能把全部画质提升都归因于损失形式改变。Table 3 的同视频教师单帧分支为 81.43，Qwen-Image 分支为 83.53，支持显式 marginal 目标与图像教师能力均有贡献。展示图是具体案例，平均收益仍应结合 Table 1–2 的自动与人工评测判断。
+
+对照信息仍有待补充：[CF++ 原论文 Table 1](https://arxiv.org/html/2605.15141v4#S4.T1) 的逐帧两步总分为 84.14，而 [DuoMatching Table 1](https://arxiv.org/html/2610.03543v1#S4.T1) 中该基线为 80.67。本次在实验说明中未找到对差异的完整解释；具体基线检查点、采样参数和评测口径待补充。不能跨表直接比较，也不能把模型来源一致写成已验证所有实验变量一致。
+
+### Q8：这个方法是否也不需要视频训练数据？
+
+最终 joint + marginal DMD 阶段不需要真实视频样本。Algorithm 1 只抽提示词和噪声，用当前学生生成视频；视频分支监督这些生成的完整视频 latent，图像分支监督其中经 Bridge 映射的抽样帧。两个 fake score estimator 也在学生新生成的样本上训练，不要求准备与提示词配对的真实视频或图像。
+
+公开的因果训练配置设置 `load_raw_video: false`，`data_path` 指向 `vidprom_filtered_extended.txt` 提示词文件。这里需要区分 DMD 学生训练与此前准备模型的阶段：
+
+| 阶段 | 数据需求 |
+| --- | --- |
+| 最终 DuoMatching DMD 学生训练 | 提示词、随机噪声、现场生成的视频及抽样帧，无需真实视频样本 |
+| LatentBridge 预训练 | 真实视频及其对应帧的两种 VAE 编码；论文使用 29,400 个 OpenVid 视频 |
+| CF++ 的 AR 教师与 causal CD 初始化 | 原流程使用视频数据；DuoMatching 实验复用其公开初始化检查点 |
+
+依据：[DuoMatching Algorithm 1](https://arxiv.org/html/2610.03543v1#A7)、[§4 的 Bridge 数据说明](https://arxiv.org/html/2610.03543v1#S4)、[公开因果训练配置](https://github.com/JohnZhan2023/DuoMatching/blob/main/configs/duomatching_train.yaml)及 [CF++ §4.1](https://arxiv.org/html/2605.15141v4#S4.SS1)。因果实现已核对到提示词配置；双向实验在文中写使用 Mixkit，本次未核对该分支的数据加载实现。
+
+如果复用视频教师、图像教师、causal CD 和预训练 Bridge，做最终因果 DMD 训练可以只准备提示词。若要从头训练或重新适配 Bridge，按论文流程仍需视频数据；因此完整方法不能概括为完全无需视频数据。
+
 ## 局限与疑问
 
 - 运动存在取舍：逐块四步设置的动态分下降，人工评测相对 Causal Forcing++ 的时间与运动偏好接近持平；画质收益不能写成所有能力都提高。
@@ -191,15 +282,17 @@ Agent 的建议：先按失败类型定位监督缺口，让适合的教师负�
 - 实验集中在 81 帧、480×832 的视频生成。长时 rollout、音画同步、口型及参考身份保持不能由这些结果直接推出。
 - 论文称不增加推理计算；额外图像教师、fake score 与 Bridge 会增加训练工作，但本文未给出完整训练开销或端到端速度对比，不能把 Bridge 的单独预训练时间当作整个方法的成本。
 - 与原版 Self Forcing 的直接组合值得验证，但本次没有组合实验，也未复现性能。
+- CF++ 基线在两篇论文中的报告分数不同，具体对照条件仍需核查；目前确认的是学生、初始化和视频教师来源。
+- 2026-10-08 核对时，公开 `main` 的默认配置写 `max_train_steps: 1800`，论文因果实验写 1,000 步。当前代码默认值与论文描述不完全一致，发布权重的实际训练设置待补充。
 
 ## 我的判断
 
-本次确认的理解是“video DMD 加 image DMD，Bridge 让单帧监督正确作用到视频 latent”；同时澄清了 Self Forcing 的 rollout 训练方式、ODE/CD 少步初始化和 DMD 后训练之间的关系。
+本次确认的理解是“video DMD 加 image DMD，Bridge 让单帧监督正确作用到视频 latent”；同时澄清了 Self Forcing 的 rollout 训练方式、ODE/CD 少步初始化和 DMD 后训练之间的关系。后续讨论进一步明确：joint 指整段联合分布，marginal 指单帧分布；Causal Forcing 最后阶段已有 joint DMD，Duo 增加单帧目标。用户还提出了基线同源性与画质差距的疑问，模型来源已核实，严格对照条件仍待补充。
 
 Agent 的阅读判断：最值得参考的是 Bridge 的表示选择和控制监督强度的消融。Direct 的运动明显下降、Bridge 基本恢复运动，说明损失施加的位置是实质问题；强教师与显式 marginal 监督的贡献也有分别验证。是否复现及最终投入优先级，用户尚未作出判断。
 
 ## 下次只看这些
 
-1. 总损失为 joint video DMD + weighted marginal image DMD；保留原有整段目标，新增单帧教师及 fake score 分支。
+1. Joint 看所有帧共同出现的分布，marginal 看抽样单帧分布。CF 最后阶段已有 joint DMD；Duo 的总损失保留该项，再加 weighted marginal image DMD。
 2. Bridge 输入前后两个视频 slice 和局部帧位置，预测图像 latent；预训练后冻结但保留反传。LVS 按变化分段，再每段随机抽一个位置。
 3. 初始化与后训练要分清：普通 FM 训练得到多步教师，ODE/CD 蒸馏已训练少步学生，self-rollout DMD 继续改善生成分布；DuoMatching 改的是最后的监督目标。
