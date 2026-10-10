@@ -1,0 +1,13 @@
+Source: LongLive-Plug: Once-for-All Distillation for Video Generation
+Authors: Shuai Yang, Luozhou Wang, Wei Huang, ZhiFei Chen, Bohan Zhang,
+Xiao Fu, Qianli Ma, Chen-Hsuan Lin, Weian Mao, Bryan Chu, Song Han,
+and Yukang Chen.
+Paper: https://arxiv.org/abs/2609.38154
+Version: arXiv:2609.38154v1, published 2026-09-29.
+Figure: PDF Figure 2 on page 4, corresponding to HTML Figure 1.
+HTML figure: https://arxiv.org/html/2609.38154v1#S3.F1
+License: Creative Commons Attribution 4.0 International (CC BY 4.0).
+License URL: https://creativecommons.org/licenses/by/4.0/
+The arXiv HTML page explicitly identifies its license as CC BY 4.0.
+Changes: rendered the PDF page, cropped to the diagram and original panel
+labels, and converted the crop to WebP. The figure's claims were not altered.
