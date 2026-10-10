@@ -1,0 +1,14 @@
+DMAD method overview
+
+Source: Figure 3 of "DMAD: Distribution Matching as Adversarial Distillation
+for Fast Visual Generation", Zhengming Yu et al., arXiv:2610.02188v1.
+Paper: https://arxiv.org/abs/2610.02188v1
+Original PDF: https://arxiv.org/pdf/2610.02188v1
+
+License: Creative Commons Attribution 4.0 International (CC BY 4.0).
+https://creativecommons.org/licenses/by/4.0/
+The paper's arXiv license link was verified on 2026-10-10.
+
+Changes: Figure 3 was cropped from a rendered PDF page, excluding surrounding
+body text and the original caption, and converted to WebP. Diagram content
+and labels were preserved. The authors do not endorse this reading note.
