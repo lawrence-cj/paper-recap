@@ -1,0 +1,12 @@
+Asset: page-compaction.png
+Title: KPage: Cross-Block Page Compaction for Hardware-Efficient Sparse Attention
+Authors: Junwei Feng et al.
+Figure: Figure 2, K/V page compaction
+Paper version: arXiv:2610.28096v1, submitted 2026-10-20
+Paper URL: https://arxiv.org/html/2610.28096v1
+Image URL: https://arxiv.org/html/2610.28096v1/Figure/packing.png
+License: Creative Commons Attribution 4.0 International (CC BY 4.0)
+License URL: https://creativecommons.org/licenses/by/4.0/
+License evidence: The paper HTML explicitly displays "License: CC BY 4.0"; Figure 2 has no separate rights statement.
+Modifications: None. Original PNG, figure text, and author watermark retained.
+Retrieved: 2026-10-26
