@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1080" viewBox="0 0 1440 1080">
+<!-- Adapted from Video Rebirth / hyperflow-infinity README Mermaid, commit 6c3291f. Apache-2.0. Modified by Paper Recap: Chinese translation, layout, overlap timeline and continuity caveat. -->
+<title>HyperFlow Infinity：生成闭环与重叠裁剪</title>
+<desc>Qwen Memory 从上一段实际视频记录文字记忆，Director 结合实际视频和记忆写下一段提示词，H3 以固定人物图和末尾七个 latent 为条件续拍。片段 A 完整保留，片段 B 前二十二帧裁掉，后面一百一十九帧保留；实际接缝是 A 最后一帧到 B 第二十三帧，裁剪去重不保证接缝平滑。</desc>
+<defs>
+ <marker id="arrow" markerWidth="9" markerHeight="9" refX="7.5" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9Z" fill="#52677e"/></marker>
+ <marker id="arrowBlue" markerWidth="9" markerHeight="9" refX="7.5" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9Z" fill="#36749a"/></marker>
+ <pattern id="hatch" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="10" height="10" fill="#fff0ed"/><line x1="0" y1="0" x2="0" y2="10" stroke="#efc3b8" stroke-width="3"/></pattern>
+ <style>
+ text{font-family:"PingFang SC","Heiti SC","Arial Unicode MS",sans-serif;fill:#203345}
+ .title{font-size:34px;font-weight:700}.heading{font-size:26px;font-weight:700}.body{font-size:22px}.small{font-size:19px}.label{font-size:21px;font-weight:600}.muted{fill:#536b7d}.white{fill:white}.flow{fill:none;stroke:#52677e;stroke-width:2.8;marker-end:url(#arrow)}.blueflow{fill:none;stroke:#36749a;stroke-width:2.8;marker-end:url(#arrowBlue)}
+ </style>
+</defs>
+<rect width="1440" height="1080" fill="#f5f7fa"/>
+<text x="40" y="56" class="title">HyperFlow Infinity：一段段续拍，如何记住、如何接上</text>
+<rect x="30" y="96" width="1380" height="436" rx="20" fill="#fff" stroke="#dbe3ea"/>
+<text x="58" y="137" class="heading">01  生成闭环：先看实际结果，再决定下一段</text>
+
+<path d="M175 218 V175 H968 V218" class="flow" stroke-dasharray="7 6"/>
+<rect x="564" y="159" width="212" height="30" rx="10" fill="#fff"/>
+<text x="670" y="181" text-anchor="middle" class="small muted">同一段实际视频</text>
+
+<rect x="60" y="220" width="225" height="100" rx="14" fill="#edf3fb" stroke="#afc3db"/>
+<text x="172" y="260" text-anchor="middle" class="label">上一段视频</text>
+<text x="172" y="291" text-anchor="middle" class="small muted">实际拍出了什么</text>
+<path d="M287 270 H316" class="flow"/>
+<rect x="320" y="220" width="220" height="100" rx="14" fill="#eef5fc" stroke="#afc3db"/>
+<text x="430" y="260" text-anchor="middle" class="label">Qwen Memory</text>
+<text x="430" y="291" text-anchor="middle" class="small muted">观察并记录变化</text>
+<path d="M542 270 H571" class="flow"/>
+<rect x="575" y="220" width="250" height="100" rx="14" fill="#edf7f4" stroke="#add4c6"/>
+<text x="700" y="260" text-anchor="middle" class="label">文字记忆</text>
+<text x="700" y="291" text-anchor="middle" class="small muted">章节 + 状态 + 近期事件</text>
+<path d="M827 270 H856" class="flow"/>
+<rect x="860" y="220" width="220" height="100" rx="14" fill="#f4effc" stroke="#c8b8df"/>
+<text x="970" y="260" text-anchor="middle" class="label">Qwen Director</text>
+<text x="970" y="291" text-anchor="middle" class="small muted">写下一段 prompt</text>
+<path d="M1082 270 H1111" class="flow"/>
+<rect x="1115" y="220" width="250" height="100" rx="14" fill="#eaf5fb" stroke="#94bfd6"/>
+<text x="1240" y="260" text-anchor="middle" class="label">H3 + HyperFlow</text>
+<text x="1240" y="291" text-anchor="middle" class="small muted">续拍生成 141 帧</text>
+
+<rect x="60" y="359" width="960" height="86" rx="12" fill="#f6f8fb"/>
+<text x="83" y="391" class="body">记忆以生成视频为准：上一轮想让角色做什么，不等于已经做到了。</text>
+<text x="83" y="423" class="small muted">Qwen 分担记事、导演与压缩历史的角色；循环中不更新模型权重。</text>
+<rect x="1070" y="359" width="295" height="88" rx="12" fill="#f1f7fb" stroke="#c2d7e4"/>
+<text x="1217" y="389" text-anchor="middle" class="label">固定人物参考图</text>
+<text x="1217" y="422" text-anchor="middle" class="label">+ 上一段末尾 7 个 latent</text>
+<path d="M1240 357 V324" class="blueflow"/>
+<text x="1209" y="345" text-anchor="end" class="small muted">作为条件</text>
+<path d="M1368 270 H1385 V490 H44 V270 H57" class="blueflow"/>
+<rect x="426" y="473" width="560" height="32" rx="10" fill="#fff"/>
+<text x="706" y="497" text-anchor="middle" class="body" style="fill:#36749a">裁剪并追加后，继续下一轮生成</text>
+
+<rect x="30" y="552" width="1380" height="468" rx="20" fill="#fff" stroke="#dbe3ea"/>
+<text x="58" y="594" class="heading">02  重叠裁剪：旧结尾只保留一次，但接缝仍可能跳变</text>
+<text x="1372" y="627" text-anchor="end" class="small muted">示意图，长度不按帧数比例绘制</text>
+<text x="60" y="674" class="label">已有片段 A</text>
+<rect x="265" y="640" width="560" height="56" rx="8" fill="#4979a7"/>
+<text x="500" y="676" text-anchor="middle" class="body white">完整保留</text>
+<rect x="665" y="640" width="160" height="56" fill="#315d8b"/>
+<text x="745" y="676" text-anchor="middle" class="body white">原来的结尾</text>
+
+<text x="60" y="761" class="label">新片段 B</text>
+<text x="60" y="789" class="small muted">共生成 141 帧</text>
+<rect x="665" y="719" width="160" height="85" rx="8" fill="url(#hatch)" stroke="#d9907d"/>
+<text x="745" y="749" text-anchor="middle" class="label" style="fill:#9e4e3b">前 22 帧</text>
+<text x="745" y="778" text-anchor="middle" class="small" style="fill:#9e4e3b">重画结尾 · 裁掉</text>
+<rect x="825" y="719" width="540" height="85" rx="8" fill="#287f73"/>
+<text x="1095" y="751" text-anchor="middle" class="label white">后 119 帧：新内容，保留</text>
+<text x="1095" y="781" text-anchor="middle" class="small white">24 fps 下，每轮新增约 4.96 秒</text>
+
+<text x="60" y="864" class="label">最终拼接</text>
+<rect x="265" y="829" width="560" height="55" rx="8" fill="#4979a7"/>
+<rect x="825" y="829" width="540" height="55" rx="8" fill="#287f73"/>
+<text x="545" y="864" text-anchor="middle" class="body white">A 完整视频</text>
+<text x="1095" y="864" text-anchor="middle" class="body white">B 从第 23 帧开始</text>
+<path d="M825 631 V904" stroke="#d68b34" stroke-width="3" stroke-dasharray="6 5"/>
+<circle cx="825" cy="885" r="5" fill="#d68b34"/>
+<rect x="60" y="915" width="1305" height="83" rx="12" fill="#fff5e6" stroke="#ebc995"/>
+<text x="82" y="947" class="heading" style="fill:#875b20">实际接缝：A 最后一帧 → B 第 23 帧</text>
+<text x="82" y="979" class="body" style="fill:#875b20">裁剪用于去重；前缀没有硬性固定，因此不能保证位置、动作速度与光照连续。</text>
+
+<text x="40" y="1054" class="small muted">来源：Video Rebirth 官方 README Mermaid（6c3291f），Apache-2.0。</text>
+<text x="1400" y="1054" text-anchor="end" class="small muted">Paper Recap 中文改绘 · 新增裁剪与接缝示意</text>
+</svg>
