@@ -1,0 +1,10 @@
+Figures: Figure 3 (method overview) and Figure 7 (compression trade-off).
+Source: Rethinking Video Autoencoders for Interactive World Models.
+Authors: Adrien Ramanana Rahary, Yutong Bai, Nicolas Dufour, Patrick Pérez, David Picard.
+Paper: https://arxiv.org/abs/2610.30129v1
+PDF: https://arxiv.org/pdf/2610.30129v1
+License: Creative Commons Attribution 4.0 International (CC BY 4.0).
+License URL: https://creativecommons.org/licenses/by/4.0/
+License verified in https://arxiv.org/html/2610.30129v1 (License: CC BY 4.0).
+Changes: rendered PDF pages 4 and 8 to PNG, cropped figure panels without original captions or body text, and converted to lossless WebP. Figure content and labels were not redrawn.
+Retrieved: 2026-10-27.
